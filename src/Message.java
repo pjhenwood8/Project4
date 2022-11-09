@@ -21,6 +21,7 @@ public class Message {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+
     }
 
     public String getTime() {
