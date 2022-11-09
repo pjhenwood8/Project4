@@ -74,4 +74,8 @@ public class User {
         words.add(s.substring(start));
         return words;
     }
+
+    public void blockUser() {
+
+    }
 }

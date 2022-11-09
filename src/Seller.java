@@ -1,8 +1,18 @@
-import java.io.IOException;
+import java.util.ArrayList;
 
-public class Seller extends User{
+public class Seller extends User {
 
-    public Seller (String username) throws IOException {
+    private String store;
+
+    public Seller(String username) {
         super(username);
     }
+    public void createStore(String storeName) {
+        store = storeName;
+    }
+
+    public String getStore() {
+        return store;
+    }
+
 }
