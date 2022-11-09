@@ -6,15 +6,8 @@ import java.util.List;
 
 public class Menu {
     public static void main(String[] args) {
-        Seller sel = new Seller("Den");
-        Buyer buy = new Buyer("Pow");
-        try {
-            writeMessage(sel, buy, "I like coffee");
-        } catch (SameTypeException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Login: ");
+        System.out.println("Password: ");
     }
 
     public static void writeMessage(User sender, User receiver, String message) throws SameTypeException, IOException {
