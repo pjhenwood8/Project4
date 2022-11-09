@@ -37,7 +37,6 @@ public class Menu {
 
         pw.write(String.join(",", allValues) + "\n");
         pw.flush();
-
     }
 }
 

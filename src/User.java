@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class User {
     private final String username;
-    private String[][] messages;
+    private ArrayList<ArrayList<String>> messages;
 
     private ArrayList<User> blockedUsers;
 
@@ -23,15 +23,15 @@ public class User {
         return username;
     }
 
-    public String[][] getMessages() {
+    public ArrayList<ArrayList<String>> getMessages() {
         return messages;
     }
 
-    public void setMessages(String[][] messages) {
+    public void setMessages(ArrayList<ArrayList<String>> messages) {
         this.messages = messages;
     }
 
-    private String[][] parseMessages(String username) throws IOException {
+    private ArrayList<ArrayList<String>> parseMessages(String username) throws IOException {
         ArrayList<ArrayList<String>> wholeFile = readWholeFile();
 
         ArrayList<ArrayList<String>> temp = new ArrayList<>();
@@ -40,14 +40,7 @@ public class User {
                 temp.add(line);
             }
         }
-
-        String[][] answer = new String[temp.size()][temp.get(0).size()];
-        for (int i = 0; i < temp.size(); i++) {
-            for (int j = 0; j < temp.get(0).size(); j++) {
-                answer[i][j] = temp.get(i).get(j);
-            }
-        }
-        return answer;
+        return temp;
     }
 
     private ArrayList<ArrayList<String>> readWholeFile() throws IOException {
@@ -86,4 +79,5 @@ public class User {
             }
         }
     }
+
 }
