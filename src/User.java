@@ -8,9 +8,15 @@ public class User {
     private final String username;
     private String[][] messages;
 
-    public User(String username) throws IOException {
+    private ArrayList<User> blockedUsers;
+
+    public User(String username) {
         this.username = username;
-        messages = parseMessages(username);
+        try {
+            messages = parseMessages(username);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getUsername() {
@@ -48,10 +54,8 @@ public class User {
         ArrayList<ArrayList<String>> fileContent = new ArrayList<>();
         BufferedReader bfr = new BufferedReader(new FileReader(new File("messages.csv")));
         String st;
-        int i = 0;
         while ((st = bfr.readLine()) != null) {
-            fileContent.set(i, customSplitSpecific(st));
-            i++;
+            fileContent.add(customSplitSpecific(st));
         }
         return fileContent;
     }
@@ -75,7 +79,11 @@ public class User {
         return words;
     }
 
-    public void blockUser() {
-
+    public void blockUser(String username, ArrayList<User> users) {
+        for (User u : users) {
+            if (u.getUsername().equalsIgnoreCase(username)) {
+                blockedUsers.add(u);
+            }
+        }
     }
 }

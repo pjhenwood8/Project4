@@ -6,6 +6,11 @@ import java.util.List;
 
 public class Menu {
     public static void main(String[] args) {
+        ArrayList<User> users = null;
+        /**
+         * users.add(new Seller("seller"));
+         * users.add(new Buyer("buyer"));
+         */
         System.out.println("Login: ");
         System.out.println("Password: ");
     }

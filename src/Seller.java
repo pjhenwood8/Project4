@@ -3,17 +3,17 @@ import java.util.ArrayList;
 
 public class Seller extends User {
 
-    private String store;
+    private ArrayList<String> stores;
 
-    public Seller(String username) throws IOException {
+    public Seller(String username) {
         super(username);
     }
     public void createStore(String storeName) {
-        store = storeName;
+        stores.add(storeName);
     }
 
-    public String getStore() {
-        return store;
+    public ArrayList<String> getStore() {
+        return stores;
     }
 
 }
