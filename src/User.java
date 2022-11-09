@@ -36,7 +36,7 @@ public class User {
 
         ArrayList<ArrayList<String>> temp = new ArrayList<>();
         for (ArrayList<String> line : wholeFile) {
-            if (line.get(0).equals(username) || line.get(1).equals(username)) {
+            if (line.get(1).equals("\"" + username + "\"") || line.get(2).equals("\"" + username + "\"")) {
                 temp.add(line);
             }
         }
@@ -55,7 +55,7 @@ public class User {
 
     private ArrayList<String> customSplitSpecific(String s)
     {
-        ArrayList<String> words = new ArrayList<String>();
+        ArrayList<String> words = new ArrayList<>();
         boolean notInsideComma = true;
         int start =0, end=0;
         for(int i=0; i<s.length()-1; i++)
@@ -79,5 +79,4 @@ public class User {
             }
         }
     }
-
 }
