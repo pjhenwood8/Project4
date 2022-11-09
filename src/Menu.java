@@ -34,36 +34,5 @@ public class Menu {
         pw.flush();
 
     }
-
-    public static ArrayList<ArrayList<String>> readWholeFile() throws IOException {
-        ArrayList<ArrayList<String>> fileContent = new ArrayList<>();
-        BufferedReader bfr = new BufferedReader(new FileReader(new File("messages.csv")));
-        String st;
-        int i = 0;
-        while ((st = bfr.readLine()) != null) {
-            fileContent.set(i, customSplitSpecific(st));
-            i++;
-        }
-        return fileContent;
-    }
-
-    public static ArrayList<String> customSplitSpecific(String s)
-    {
-        ArrayList<String> words = new ArrayList<String>();
-        boolean notInsideComma = true;
-        int start =0, end=0;
-        for(int i=0; i<s.length()-1; i++)
-        {
-            if(s.charAt(i)==',' && notInsideComma)
-            {
-                words.add(s.substring(start,i));
-                start = i+1;
-            }
-            else if(s.charAt(i)=='"')
-                notInsideComma=!notInsideComma;
-        }
-        words.add(s.substring(start));
-        return words;
-    }
 }
 
