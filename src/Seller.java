@@ -1,10 +1,11 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Seller extends User {
 
     private String store;
 
-    public Seller(String username) {
+    public Seller(String username) throws IOException {
         super(username);
     }
     public void createStore(String storeName) {
