@@ -6,14 +6,14 @@ import java.util.ArrayList;
 
 public class User {
     private final String username;
-    private ArrayList<ArrayList<String>> messages;
+    private ArrayList<ArrayList<String>> messages = new ArrayList<>();
 
     private ArrayList<User> blockedUsers;
 
     public User(String username) {
         this.username = username;
         try {
-            messages = parseMessages(username);
+            messages = parseMessages();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,7 +31,7 @@ public class User {
         this.messages = messages;
     }
 
-    private ArrayList<ArrayList<String>> parseMessages(String username) throws IOException {
+    private ArrayList<ArrayList<String>> parseMessages() throws IOException {
         ArrayList<ArrayList<String>> wholeFile = readWholeFile();
 
         ArrayList<ArrayList<String>> temp = new ArrayList<>();
@@ -79,4 +79,5 @@ public class User {
             }
         }
     }
+
 }

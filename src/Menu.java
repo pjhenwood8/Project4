@@ -7,11 +7,16 @@ import java.util.Scanner;
 public class Menu {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<User> users = null;
+        ArrayList<User> users = new ArrayList<>();
+        users.add(new User("Den"));
+        System.out.println(users.get(0).getUsername());
+        System.out.println(users.get(0).getMessages());
         /**
          * users.add(new Seller("seller"));
          * users.add(new Buyer("buyer"));
          */
+        System.out.println("[1] Create Account\n[2] Login");
+
         System.out.println("Login: ");
         String username = scanner.nextLine();
         System.out.println("Password: ");
