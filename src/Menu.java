@@ -2,17 +2,52 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 public class Menu {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
         ArrayList<User> users = null;
         /**
          * users.add(new Seller("seller"));
          * users.add(new Buyer("buyer"));
          */
         System.out.println("Login: ");
+        String username = scanner.nextLine();
         System.out.println("Password: ");
+        String password = scanner.nextLine();
+        //some login stuff functionality
+        boolean buy = false;
+        User user;
+        if (buy)
+            user = new Buyer(username);
+        else
+            user = new Seller(username);
+        String[] listOfUsers = parseUsers(user);
+        for (int i = 0; i < listOfUsers.length; i++) {
+            System.out.printf("[%d] %s%n", i+1, listOfUsers[i]);
+        }
+        System.out.printf("[%d] %s%n", 0, "Start new dialog");
+    }
+
+    public static String[] parseUsers(User user) {
+        ArrayList<ArrayList<String>> messages = user.getMessages();
+        ArrayList<String> temp = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i).get(1).equals("\"" + user.getUsername() + "\"")) {
+                if (!temp.contains(messages.get(i).get(2)))
+                    temp.add(messages.get(i).get(2));
+            }
+            else {
+                if (!temp.contains(messages.get(i).get(1)))
+                    temp.add(messages.get(i).get(1));
+            }
+        }
+        String[] answer = new String[temp.size()];
+        for (int i = 0; i < temp.size(); i++) {
+            answer[i] = temp.get(i);
+        }
+        return answer;
     }
 
     public static void writeMessage(User sender, User receiver, String message) throws SameTypeException, IOException {
