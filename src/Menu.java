@@ -24,7 +24,7 @@ public class Menu {
         if (sender instanceof Seller && receiver instanceof Seller) {
             throw new SameTypeException("Sellers can't to sellers");
         }
-        PrintWriter pw = new PrintWriter(new FileWriter(new File("messages.csv")));
+        PrintWriter pw = new PrintWriter(new FileWriter(new File("messages.csv")), true);
 
         String[] allValues = new String[4];
 
