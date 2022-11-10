@@ -8,10 +8,13 @@ public class User {
     private final String username;
     private ArrayList<Message> messages = new ArrayList<>();
 
+    private String password;
+
     private ArrayList<User> blockedUsers;
 
-    public User(String username) {
+    public User(String username, String password) {
         this.username = username;
+        this.password = password;
         try {
             messages = parseMessages();
         } catch (IOException e) {
@@ -84,4 +87,11 @@ public class User {
         }
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -8,26 +8,68 @@ public class Menu {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         ArrayList<User> users = new ArrayList<>();
-        users.add(new User("Den"));
-        System.out.println(users.get(0).getUsername());
-        System.out.println(users.get(0).getMessages());
-        /**
-         * users.add(new Seller("seller"));
-         * users.add(new Buyer("buyer"));
-         */
-        System.out.println("[1] Create Account\n[2] Login");
+        //users.add(new User("Den"));
+        //System.out.println(users.get(0).getUsername());
+        //System.out.println(users.get(0).getMessages());
+        boolean loggedIn = false;
+        boolean online = true;
+        /** MENU EXAMPLE
+        while (online) {
+            while (!loggedIn) {
+                System.out.println("[1] Create Account\n[2] Login\n[3] Exit");
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+                String username = "";
+                String password = "";
+                switch (choice) {
+                    case 1:
+                        System.out.println("Create username: ");
+                        username = scanner.nextLine();
+                        System.out.println("Create password: ");
+                        password = scanner.nextLine();
+                        System.out.println("Are you a [1] buyer or [2] seller");
+                        choice = scanner.nextInt();
+                        scanner.nextLine();
+                        if (choice == 1) {
+                            users.add(new Buyer(username, password));
+                        } else if (choice == 2) {
+                            users.add(new Seller(username, password));
+                        }
+                        System.out.println("Account successfully created!");
+                        break;
+                    case 2:
+                        System.out.println("Login: ");
+                        username = scanner.nextLine();
+                        System.out.println("Password: ");
+                        password = scanner.nextLine();
+                        for (User u : users) {
+                            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
+                                loggedIn = true;
+                                System.out.println("Successfully Logged in");
+                            }
+                        }
+                        break;
+                    case 3:
+                        online = false;
+                        break;
+                }
+                if (!online) {
+                    break;
+                }
 
-        System.out.println("Login: ");
-        String username = scanner.nextLine();
-        System.out.println("Password: ");
-        String password = scanner.nextLine();
+            }
+        } **/
         //some login stuff functionality
+        System.out.println("Create username: ");
+        String username = scanner.nextLine();
+        System.out.println("Create password: ");
+        String password = scanner.nextLine();
         boolean buy = false;
         User user;
         if (buy)
-            user = new Buyer(username);
+            user = new Buyer(username, password);
         else
-            user = new Seller(username);
+            user = new Seller(username, password);
         String[] listOfUsers = parseUsers(user);
         for (int i = 0; i < listOfUsers.length; i++) {
             System.out.printf("[%d] %s%n", i+1, listOfUsers[i]);
@@ -38,6 +80,7 @@ public class Menu {
 
 
     }
+
 
     public static String[] parseUsers(User user) {
         ArrayList<Message> messages = user.getMessages();

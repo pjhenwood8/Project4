@@ -5,8 +5,8 @@ public class Seller extends User {
 
     private ArrayList<String> stores;
 
-    public Seller(String username) {
-        super(username);
+    public Seller(String username, String password) {
+        super(username, password);
     }
     public void createStore(String storeName) {
         stores.add(storeName);
