@@ -33,19 +33,23 @@ public class Menu {
             System.out.printf("[%d] %s%n", i+1, listOfUsers[i]);
         }
         System.out.printf("[%d] %s%n", 0, "Start new dialog");
+        int choice = Integer.parseInt(scanner.nextLine());
+        ArrayList<Message> messageHistory = parseMessageHistory(user, listOfUsers[choice-1]);
+
+
     }
 
     public static String[] parseUsers(User user) {
-        ArrayList<ArrayList<String>> messages = user.getMessages();
+        ArrayList<Message> messages = user.getMessages();
         ArrayList<String> temp = new ArrayList<>();
         for (int i = 0; i < messages.size(); i++) {
-            if (messages.get(i).get(1).equals("\"" + user.getUsername() + "\"")) {
-                if (!temp.contains(messages.get(i).get(2)))
-                    temp.add(messages.get(i).get(2));
+            if (messages.get(i).getSender().equals(user.getUsername())) {
+                if (!temp.contains(messages.get(i).getReceiver()))
+                    temp.add(messages.get(i).getReceiver());
             }
             else {
-                if (!temp.contains(messages.get(i).get(1)))
-                    temp.add(messages.get(i).get(1));
+                if (!temp.contains(messages.get(i).getSender()))
+                    temp.add(messages.get(i).getSender());
             }
         }
         String[] answer = new String[temp.size()];
@@ -53,6 +57,17 @@ public class Menu {
             answer[i] = temp.get(i);
         }
         return answer;
+    }
+
+    public static ArrayList<Message> parseMessageHistory(User mainClient, String thirdParty) {
+        ArrayList<Message> messages = mainClient.getMessages();
+        ArrayList<Message> temp = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i).getSender().equals(thirdParty) || messages.get(i).getReceiver().equals(thirdParty)) {
+                temp.add(messages.get(i));
+            }
+        }
+        return temp;
     }
 
     public static void writeMessage(User sender, User receiver, String message) throws SameTypeException, IOException {
