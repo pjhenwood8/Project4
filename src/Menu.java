@@ -60,9 +60,9 @@ public class Menu {
             }
         } **/
         //some login stuff functionality
-        System.out.println("Create username: ");
+        System.out.println("Enter username: ");
         String username = scanner.nextLine();
-        System.out.println("Create password: ");
+        System.out.println("Enter password: ");
         String password = scanner.nextLine();
         boolean buy = false;
         User user;
@@ -77,8 +77,10 @@ public class Menu {
         System.out.printf("[%d] %s%n", 0, "Start new dialog");
         int choice = Integer.parseInt(scanner.nextLine());
         ArrayList<Message> messageHistory = parseMessageHistory(user, listOfUsers[choice-1]);
-
-
+        for (int i = 0; i < messageHistory.size(); i++) {
+            System.out.printf("%s  (%s)%n", messageHistory.get(i).getTime(),messageHistory.get(i).getSender());
+            System.out.println(messageHistory.get(i).getMessage());
+        }
     }
 
 
