@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class User {
     private final String username;
-    private ArrayList<ArrayList<String>> messages = new ArrayList<>();
+    private ArrayList<Message> messages = new ArrayList<>();
 
     private ArrayList<User> blockedUsers;
 
@@ -23,32 +23,36 @@ public class User {
         return username;
     }
 
-    public ArrayList<ArrayList<String>> getMessages() {
+    public ArrayList<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(ArrayList<ArrayList<String>> messages) {
+    public void setMessages(ArrayList<Message> messages) {
         this.messages = messages;
     }
 
-    private ArrayList<ArrayList<String>> parseMessages() throws IOException {
-        ArrayList<ArrayList<String>> wholeFile = readWholeFile();
+    private ArrayList<Message> parseMessages() throws IOException {
+        ArrayList<Message> wholeFile = readWholeFile();
 
-        ArrayList<ArrayList<String>> temp = new ArrayList<>();
-        for (ArrayList<String> line : wholeFile) {
-            if (line.get(1).equals("\"" + username + "\"") || line.get(2).equals("\"" + username + "\"")) {
+        ArrayList<Message> temp = new ArrayList<>();
+        for (Message line : wholeFile) {
+            if (line.getSender().equals(username) || line.getReceiver().equals(username)) {
                 temp.add(line);
             }
         }
         return temp;
     }
 
-    private ArrayList<ArrayList<String>> readWholeFile() throws IOException {
-        ArrayList<ArrayList<String>> fileContent = new ArrayList<>();
+    private ArrayList<Message> readWholeFile() throws IOException {
+        ArrayList<Message> fileContent = new ArrayList<>();
         BufferedReader bfr = new BufferedReader(new FileReader(new File("messages.csv")));
         String st;
         while ((st = bfr.readLine()) != null) {
-            fileContent.add(customSplitSpecific(st));
+            ArrayList<String> temp = customSplitSpecific(st);
+            for (int i = 0; i < temp.size(); i++) {
+                temp.set(i, temp.get(i).substring(1, temp.get(i).length()-1));
+            }
+            fileContent.add(new Message(temp.get(0),temp.get(1),temp.get(2),temp.get(3)));
         }
         return fileContent;
     }
