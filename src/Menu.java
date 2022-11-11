@@ -7,14 +7,28 @@ import java.util.Scanner;
 public class Menu {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<User> users = new ArrayList<>();
+        ArrayList<User> users = readUsers("login.csv");
+        User currUser = null;
+        /*for (User u : users) {
+            if (u instanceof Buyer) {
+                System.out.println("Buyer:");
+            } else {
+                System.out.println("Seller:");
+            }
+            System.out.println(u.getUsername());
+            System.out.println(u.getPassword());
+        } */
+        //ArrayList<User> users = new ArrayList<>();
+        //User u1 = new User("tfh", "pass");
+        //User currUser = new User("user1", "password");
+        //users.add(currUser);
         //users.add(new User("Den"));
         //System.out.println(users.get(0).getUsername());
         //System.out.println(users.get(0).getMessages());
         boolean loggedIn = false;
         boolean online = true;
-        /** MENU EXAMPLE
-        while (online) {
+        /* MENU EXAMPLE */
+        /*while (online) {
             while (!loggedIn) {
                 System.out.println("[1] Create Account\n[2] Login\n[3] Exit");
                 int choice = scanner.nextInt();
@@ -38,7 +52,7 @@ public class Menu {
                         System.out.println("Account successfully created!");
                         break;
                     case 2:
-                        System.out.println("Login: ");
+                        System.out.println("username: ");
                         username = scanner.nextLine();
                         System.out.println("Password: ");
                         password = scanner.nextLine();
@@ -46,6 +60,8 @@ public class Menu {
                             if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
                                 loggedIn = true;
                                 System.out.println("Successfully Logged in");
+                                currUser = u;
+
                             }
                         }
                         break;
@@ -58,8 +74,74 @@ public class Menu {
                 }
 
             }
-        } **/
-        // User logs in
+        } */
+        /* Edit or delete User */
+        /*System.out.println(currUser.getUsername());
+        System.out.println(currUser.getPassword());
+        while (online) {
+            System.out.println("[3] Account");
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice == 3) {
+                    do {
+                        System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Exit");
+                        choice = scanner.nextInt();
+                        if (choice > 3) {
+                            throw new InputMismatchException();
+                        }
+                        switch (choice) {
+                            case 1:
+                                scanner.nextLine();
+                                System.out.println("[1] Change Username\n[2] Change Password\n[3] Exit");
+                                choice = scanner.nextInt();
+                                String newAccountInfo = "";
+                                if (choice > 3) {
+                                    throw new InputMismatchException();
+                                }
+                                switch (choice) {
+                                    case 1 -> {
+                                        scanner.nextLine();
+                                        System.out.println("Enter new username:");
+                                        newAccountInfo = scanner.nextLine();
+                                        currUser.setUsername(newAccountInfo);
+                                        System.out.printf("Username changed to: %s%n", newAccountInfo);
+                                    }
+                                    case 2 -> {
+                                        scanner.nextLine();
+                                        System.out.println("Enter new password:");
+                                        newAccountInfo = scanner.nextLine();
+                                        currUser.setPassword(newAccountInfo);
+                                        System.out.printf("Password changed to: %s%n", newAccountInfo);
+                                    }
+                                    case 3 -> scanner.nextLine();
+                                }
+                                break;
+                            case 2:
+                                scanner.nextLine();
+                                System.out.println("Are you sure you want to delete this user? [Y/N]");
+                                String yesNo = scanner.nextLine();
+                                if (yesNo.equalsIgnoreCase("Y")) {
+                                    System.out.printf("User [%s] successfully deleted%n", currUser.getUsername());
+                                    currUser.removeUser();
+                                    users.remove(currUser);
+                                    choice = 3;
+                                }
+                                break;
+                            case 3:
+                                break;
+                        }
+                    } while (choice != 3);
+                    System.out.println(currUser.getUsername());
+                    System.out.println(currUser.getPassword());
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input");
+                scanner.nextLine();
+            }
+        } */
+
+        /* User logs in */
         System.out.println("Enter username: ");
         String username = scanner.nextLine();
         System.out.println("Enter password: ");
@@ -202,6 +284,96 @@ public class Menu {
             }
         }
         return temp;
+    }
+
+    /*
+    public static void writeMessage(User sender, User receiver, String message) throws SameTypeException, IOException {
+        if (sender instanceof Buyer && receiver instanceof Buyer) {
+            throw new SameTypeException("Buyers can't write to buyers");
+        }
+        if (sender instanceof Seller && receiver instanceof Seller) {
+            throw new SameTypeException("Sellers can't to sellers");
+        }
+        PrintWriter pw = new PrintWriter(new FileWriter(new File("messages.csv")), true);
+
+        String[] allValues = new String[4];
+
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = myDateObj.format(myFormatObj);
+
+        allValues[0] = "\"" + formattedDate + "\"";
+        allValues[1] = "\"" + sender.getUsername() + "\"";
+        allValues[2] = "\"" + receiver.getUsername() + "\"";
+        allValues[3] = "\"" + message + "\"";
+
+        pw.write(String.join(",", allValues) + "\n");
+        pw.flush();
+    } */
+
+    public static ArrayList<User> readUsers(String filename) throws FileNotFoundException {
+        File f = new File(filename);
+        ArrayList<String> lines = new ArrayList<>();
+        BufferedReader bfr = null;
+        ArrayList<User> users = new ArrayList<>();
+        if (!f.exists()) {
+            throw new FileNotFoundException();
+        } else {
+            try {
+                bfr = new BufferedReader(new FileReader(f));
+                String read = bfr.readLine();
+                while (read != null) {
+                    lines.add(read);
+                    read = bfr.readLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (bfr != null) {
+                        bfr.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        for (String line : lines) {
+            String userString = line;
+            String username = userString.substring(0, userString.indexOf(','));
+            userString = userString.substring(userString.indexOf(',') + 1);
+            String password = userString.substring(0, userString.indexOf(','));
+            userString = userString.substring(userString.indexOf(',') + 1);
+            boolean isBuyer = userString.equalsIgnoreCase("b");
+            if (isBuyer) {
+                users.add(new Buyer(username, password));
+            } else {
+                users.add(new Seller(username, password));
+            }
+        }
+        return users;
+    }
+
+    public static void writeUsers(String filename, ArrayList<User> users) {
+        File f = new File(filename);
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new FileOutputStream(f, false));
+            for (User u : users) {
+                if (u instanceof Buyer) {
+                    pw.println(u.getUsername() + ',' + u.getPassword() + ",b");
+                } else {
+                    pw.println(u.getUsername() + ',' + u.getPassword() + ",s");
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (pw != null) {
+                pw.close();
+            }
+        }
     }
 }
 

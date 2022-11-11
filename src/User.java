@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class User {
-    private final String username;
+    private String username;
     private ArrayList<Message> messages = new ArrayList<>();
 
     private String password;
@@ -24,6 +24,10 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public ArrayList<Message> getMessages() {
@@ -94,4 +98,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void removeUser() {
+        username = null;
+        password = null;
+        blockedUsers = null;
+        messages = null;
+    }
+
 }
