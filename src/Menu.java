@@ -75,11 +75,26 @@ public class Menu {
             System.out.printf("[%d] %s%n", i+1, listOfUsers[i]);
         }
         System.out.printf("[%d] %s%n", 0, "Start new dialog");
-        int choice = Integer.parseInt(scanner.nextLine());
-        ArrayList<Message> messageHistory = parseMessageHistory(user, listOfUsers[choice-1]);
+        int receiveUser = Integer.parseInt(scanner.nextLine());
+        ArrayList<Message> messageHistory = parseMessageHistory(user, listOfUsers[receiveUser-1]);
         for (int i = 0; i < messageHistory.size(); i++) {
-            System.out.printf("%s  (%s)%n", messageHistory.get(i).getTime(),messageHistory.get(i).getSender());
+            System.out.printf("%s  (%s -> %s)%n", messageHistory.get(i).getTime(),messageHistory.get(i).getSender(),messageHistory.get(i).getReceiver());
             System.out.println(messageHistory.get(i).getMessage());
+        }
+        System.out.println();
+        System.out.println("[1] Write message                         [2] Edit message");
+        System.out.println("[3] Delete message                        [0] Exit");
+        int choice = Integer.parseInt(scanner.nextLine());
+        if (choice == 1) {
+            System.out.println("Enter message: ");
+            String mes = scanner.nextLine();
+            ArrayList<Message> temp = user.getMessages();
+            temp.add(new Message(user.getUsername(), listOfUsers[receiveUser-1], mes));
+            messageHistory = parseMessageHistory(user, listOfUsers[receiveUser-1]);
+            for (int i = 0; i < messageHistory.size(); i++) {
+                System.out.printf("%s  (%s -> %s)%n", messageHistory.get(i).getTime(),messageHistory.get(i).getSender(),messageHistory.get(i).getReceiver());
+                System.out.println(messageHistory.get(i).getMessage());
+            }
         }
     }
 
