@@ -59,7 +59,7 @@ public class Menu {
 
             }
         } **/
-        //some login stuff functionality
+        // User logs in
         System.out.println("Enter username: ");
         String username = scanner.nextLine();
         System.out.println("Enter password: ");
@@ -70,30 +70,104 @@ public class Menu {
             user = new Buyer(username, password);
         else
             user = new Seller(username, password);
+
+
+        //We show him list of people with whom he had conversations before
+        ArrayList<Message> messageHistory;
         String[] listOfUsers = parseUsers(user);
         for (int i = 0; i < listOfUsers.length; i++) {
             System.out.printf("[%d] %s%n", i+1, listOfUsers[i]);
         }
-        System.out.printf("[%d] %s%n", 0, "Start new dialog");
-        int receiveUser = Integer.parseInt(scanner.nextLine());
-        ArrayList<Message> messageHistory = parseMessageHistory(user, listOfUsers[receiveUser-1]);
-        for (int i = 0; i < messageHistory.size(); i++) {
-            System.out.printf("%s  (%s -> %s)%n", messageHistory.get(i).getTime(),messageHistory.get(i).getSender(),messageHistory.get(i).getReceiver());
-            System.out.println(messageHistory.get(i).getMessage());
-        }
-        System.out.println();
-        System.out.println("[1] Write message                         [2] Edit message");
-        System.out.println("[3] Delete message                        [0] Exit");
-        int choice = Integer.parseInt(scanner.nextLine());
-        if (choice == 1) {
-            System.out.println("Enter message: ");
+        System.out.printf("[%d] %s%n", 0, "Start new dialog");           // We provide an option to start new dialog
+        int receiveUser = Integer.parseInt(scanner.nextLine());          // He makes the choice
+        if (receiveUser == 0) {                                          // dialog with new user
+            System.out.println("Enter name of user:");
+            String newUser = scanner.nextLine();
+            System.out.println("Write your hello message first!");
             String mes = scanner.nextLine();
             ArrayList<Message> temp = user.getMessages();
-            temp.add(new Message(user.getUsername(), listOfUsers[receiveUser-1], mes));
-            messageHistory = parseMessageHistory(user, listOfUsers[receiveUser-1]);
+            temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
+            user.setMessages(temp);
+            messageHistory = parseMessageHistory(user, newUser);
             for (int i = 0; i < messageHistory.size(); i++) {
-                System.out.printf("%s  (%s -> %s)%n", messageHistory.get(i).getTime(),messageHistory.get(i).getSender(),messageHistory.get(i).getReceiver());
-                System.out.println(messageHistory.get(i).getMessage());
+                System.out.print(messageHistory.get(i).toString());                     //we print their message history
+            }
+        }
+        else {
+            messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+            for (int i = 0; i < messageHistory.size(); i++) {
+                System.out.print(messageHistory.get(i).toString());
+            }
+            System.out.println();
+            System.out.println("[1] Write message                         [2] Edit message");
+            System.out.println("[3] Delete message                        [0] Exit");
+            int choice = Integer.parseInt(scanner.nextLine());
+            if (choice == 1) {
+                System.out.println("Enter message: ");
+                String mes = scanner.nextLine();
+                ArrayList<Message> temp = user.getMessages();
+                temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                user.setMessages(temp);
+                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                for (int i = 0; i < messageHistory.size(); i++) {
+                    System.out.print(messageHistory.get(i).toString());
+                }
+            }
+            if (choice == 2) {
+                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                ArrayList<Message> userIsSender = new ArrayList<>();
+                int i = 0;
+                while (i < messageHistory.size()) {
+                    if (messageHistory.get(i).getSender().equals(user.getUsername())) {
+                        userIsSender.add(messageHistory.get(i));
+                        System.out.printf("[%d] " + messageHistory.get(i).toString(), i+1);
+                        i++;
+                    }
+                    else
+                        System.out.print(messageHistory.get(i).toString());
+                }
+                System.out.println("Choose message to edit");
+                choice = Integer.parseInt(scanner.nextLine());
+                System.out.println("To which message you want to change it?");
+                String msg = scanner.nextLine();
+                Message temp = userIsSender.get(choice-1);
+                for (int j = 0; j < messageHistory.size(); j++) {
+                    if (messageHistory.get(j).getId() == temp.getId()) {
+                        messageHistory.get(j).setMessage(msg);
+                    }
+                }
+                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                for (int j = 0; j < messageHistory.size(); j++) {
+                    System.out.print(messageHistory.get(j).toString());
+                }
+            }
+            if (choice == 3) {
+                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                ArrayList<Message> userIsSender = new ArrayList<>();
+                int i = 0;
+                while (i < messageHistory.size()) {
+                    if (messageHistory.get(i).getSender().equals(user.getUsername())) {
+                        userIsSender.add(messageHistory.get(i));
+                        System.out.printf("[%d] " + messageHistory.get(i).toString(), i+1);
+                        i++;
+                    }
+                    else
+                        System.out.print(messageHistory.get(i).toString());
+                }
+                System.out.println("Choose message to delete");
+                choice = Integer.parseInt(scanner.nextLine());
+                Message temp = userIsSender.get(choice-1);
+                ArrayList<Message> allUserMessages = user.getMessages();
+                for (int j = 0; j < allUserMessages.size(); j++) {
+                    if (allUserMessages.get(j).getId() == temp.getId()) {
+                        allUserMessages.remove(j);
+                        break;
+                    }
+                }
+                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                for (int j = 0; j < messageHistory.size(); j++) {
+                    System.out.print(messageHistory.get(j).toString());
+                }
             }
         }
     }
@@ -128,30 +202,6 @@ public class Menu {
             }
         }
         return temp;
-    }
-
-    public static void writeMessage(User sender, User receiver, String message) throws SameTypeException, IOException {
-        if (sender instanceof Buyer && receiver instanceof Buyer) {
-            throw new SameTypeException("Buyers can't write to buyers");
-        }
-        if (sender instanceof Seller && receiver instanceof Seller) {
-            throw new SameTypeException("Sellers can't to sellers");
-        }
-        PrintWriter pw = new PrintWriter(new FileWriter(new File("messages.csv")), true);
-
-        String[] allValues = new String[4];
-
-        LocalDateTime myDateObj = LocalDateTime.now();
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String formattedDate = myDateObj.format(myFormatObj);
-
-        allValues[0] = "\"" + formattedDate + "\"";
-        allValues[1] = "\"" + sender.getUsername() + "\"";
-        allValues[2] = "\"" + receiver.getUsername() + "\"";
-        allValues[3] = "\"" + message + "\"";
-
-        pw.write(String.join(",", allValues) + "\n");
-        pw.flush();
     }
 }
 

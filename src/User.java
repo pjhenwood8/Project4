@@ -55,7 +55,7 @@ public class User {
             for (int i = 0; i < temp.size(); i++) {
                 temp.set(i, temp.get(i).substring(1, temp.get(i).length()-1));
             }
-            fileContent.add(new Message(temp.get(0),temp.get(1),temp.get(2),temp.get(3)));
+            fileContent.add(new Message(Integer.parseInt(temp.get(0)),temp.get(1),temp.get(2),temp.get(3),temp.get(4)));
         }
         return fileContent;
     }

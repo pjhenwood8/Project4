@@ -2,12 +2,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Message {
+    private int id;
+    private static int count = 0;
     private final String time;
     private String sender;
     private String receiver;
     private String message;
 
-    public Message(String time, String sender, String receiver, String message) {
+    public Message(int id, String time, String sender, String receiver, String message) {
+        count++;
+        this.id = id;
         this.time = time;
         this.sender = sender;
         this.receiver = receiver;
@@ -18,10 +22,16 @@ public class Message {
         LocalDateTime myDateObj = LocalDateTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         this.time = myDateObj.format(myFormatObj);
+        count++;
+        this.id = count;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
 
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTime() {
@@ -50,5 +60,10 @@ public class Message {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String toString() {
+        String ans = String.format("%s   (%s -> %s)%n%s%n", time, sender, receiver, message);
+        return ans;
     }
 }
