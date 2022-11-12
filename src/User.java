@@ -77,7 +77,7 @@ public class User {
         return fileContent;
     }
 
-    private ArrayList<String> customSplitSpecific(String s)
+    public ArrayList<String> customSplitSpecific(String s)
     {
         ArrayList<String> words = new ArrayList<>();
         boolean notInsideComma = true;

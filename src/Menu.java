@@ -2,83 +2,18 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<User> users = readUsers("login.csv");
+        /*ArrayList<User> users = readUsers("login.csv");
         User currUser = null;
-        /*for (User u : users) {
-            if (u instanceof Buyer) {
-                System.out.println("Buyer:");
-            } else {
-                System.out.println("Seller:");
-            }
-            System.out.println(u.getUsername());
-            System.out.println(u.getPassword());
-        } */
-        //ArrayList<User> users = new ArrayList<>();
-        //User u1 = new User("tfh", "pass");
-        //User currUser = new User("user1", "password");
-        //users.add(currUser);
-        //users.add(new User("Den"));
-        //System.out.println(users.get(0).getUsername());
-        //System.out.println(users.get(0).getMessages());
-        boolean loggedIn = false;
+        currUser = new User("User1","password");
         boolean online = true;
-        /* MENU EXAMPLE */
-        /*while (online) {
-            while (!loggedIn) {
-                System.out.println("[1] Create Account\n[2] Login\n[3] Exit");
-                int choice = scanner.nextInt();
-                scanner.nextLine();
-                String username = "";
-                String password = "";
-                switch (choice) {
-                    case 1:
-                        System.out.println("Create username: ");
-                        username = scanner.nextLine();
-                        System.out.println("Create password: ");
-                        password = scanner.nextLine();
-                        System.out.println("Are you a [1] buyer or [2] seller");
-                        choice = scanner.nextInt();
-                        scanner.nextLine();
-                        if (choice == 1) {
-                            users.add(new Buyer(username, password));
-                        } else if (choice == 2) {
-                            users.add(new Seller(username, password));
-                        }
-                        System.out.println("Account successfully created!");
-                        break;
-                    case 2:
-                        System.out.println("username: ");
-                        username = scanner.nextLine();
-                        System.out.println("Password: ");
-                        password = scanner.nextLine();
-                        for (User u : users) {
-                            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
-                                loggedIn = true;
-                                System.out.println("Successfully Logged in");
-                                currUser = u;
-
-                            }
-                        }
-                        break;
-                    case 3:
-                        online = false;
-                        break;
-                }
-                if (!online) {
-                    break;
-                }
-
-            }
-        } */
         /* Edit or delete User */
-        /*System.out.println(currUser.getUsername());
-        System.out.println(currUser.getPassword());
-        while (online) {
+        /*while (online) {
             System.out.println("[3] Account");
             try {
                 int choice = scanner.nextInt();
@@ -139,7 +74,7 @@ public class Menu {
                 System.out.println("Invalid input");
                 scanner.nextLine();
             }
-        } */
+        }*/
 
         /* User logs in */
         System.out.println("Enter username: ");
@@ -164,7 +99,11 @@ public class Menu {
                 System.out.printf("[%d] %s%n", i + 1, listOfUsers[i]);
             }
             System.out.printf("[%d] %s%n", 0, "Start new dialog");           // We provide an option to start new dialog
+            System.out.printf("[%d] %s%n", -1, "Exit");
             int receiveUser = Integer.parseInt(scanner.nextLine());          // He makes the choice
+            if (receiveUser == -1) {
+                break;
+            }
             if (receiveUser == 0) {                                          // dialog with new user
                 System.out.println("Enter name of user:");
                 String newUser = scanner.nextLine();
@@ -193,10 +132,6 @@ public class Menu {
                         ArrayList<Message> temp = user.getMessages();
                         temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
                         user.setMessages(temp);
-                        messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                        for (int i = 0; i < messageHistory.size(); i++) {
-                            System.out.print(messageHistory.get(i).toString());
-                        }
                     }
                     if (optionChoice == 2) {
                         messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
@@ -219,10 +154,6 @@ public class Menu {
                             if (messageHistory.get(j).getId() == temp.getId()) {
                                 messageHistory.get(j).setMessage(msg);
                             }
-                        }
-                        messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                        for (int j = 0; j < messageHistory.size(); j++) {
-                            System.out.print(messageHistory.get(j).toString());
                         }
                     }
                     if (optionChoice == 3) {
@@ -249,17 +180,15 @@ public class Menu {
                             }
                         }
                         user.refreshMessages();
-                        messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                        for (int j = 0; j < messageHistory.size(); j++) {
-                            System.out.print(messageHistory.get(j).toString());
-                        }
                     }
                     if (optionChoice == 0) {
-                        insideMessageHistory = false;
+                        //insideMessageHistory = false;
+                        break;
                     }
                 }
             }
         }
+        saveMessages(user);
     }
 
 
@@ -381,6 +310,32 @@ public class Menu {
             if (pw != null) {
                 pw.close();
             }
+        }
+    }
+
+    public static void saveMessages(User user) throws IOException {
+        ArrayList<Message> allMessages = user.getMessages();
+        ArrayList<String> temp = new ArrayList<>();
+        BufferedReader bfr = new BufferedReader(new FileReader(new File("messages.csv")));
+        String st;
+        while ((st = bfr.readLine())!=null) {
+            ArrayList<String> mesInfo = user.customSplitSpecific(st);
+            if (!(mesInfo.get(2).equals("\"" + user.getUsername() + "\"") || mesInfo.get(3).equals("\"" + user.getUsername()+ "\"")))
+                temp.add(st);
+        }
+
+        PrintWriter pw = new PrintWriter(new FileOutputStream(new File("messages.csv"),false));
+        for (int i = 0; i < temp.size(); i++) {
+            pw.write(temp.get(i));
+            pw.println();
+            pw.flush();
+        }
+        for (int i = 0; i < allMessages.size(); i++) {
+            Message msg = allMessages.get(i);
+            String ans = String.format("\"%d\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", msg.getId(), msg.getTime(), msg.getSender(), msg.getReceiver(), msg.getMessage(), msg.isDelBySender(), msg.isDelByReceiver());
+            pw.write(ans);
+            pw.println();
+            pw.flush();
         }
     }
 }
