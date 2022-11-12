@@ -3,17 +3,28 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.*;
 import java.util.Scanner;
 
 public class Menu {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
+
+        /* Test to update login.csv*/
         /*ArrayList<User> users = readUsers("login.csv");
+        addBlockedUsers(users);
+        User newUser = new Buyer("Buyer3", "email4@email.com", "password4");
+        users.add(newUser);
+        writeUsers("login.csv", users); */
+
         User currUser = null;
-        currUser = new User("User1","password");
+        boolean loggedIn = false;
         boolean online = true;
+
         /* Edit or delete User */
-        /*while (online) {
+        /*System.out.println(currUser.getUsername());
+        System.out.println(currUser.getPassword());
+        while (online) {
             System.out.println("[3] Account");
             try {
                 int choice = scanner.nextInt();
@@ -74,19 +85,21 @@ public class Menu {
                 System.out.println("Invalid input");
                 scanner.nextLine();
             }
-        }*/
+        } */
 
         /* User logs in */
         System.out.println("Enter username: ");
         String username = scanner.nextLine();
+        System.out.println("Enter email: ");
+        String email = scanner.nextLine();
         System.out.println("Enter password: ");
         String password = scanner.nextLine();
         boolean buy = false;
         User user;
         if (buy)
-            user = new Buyer(username, password);
+            user = new Buyer(username, email, password);
         else
-            user = new Seller(username, password);
+            user = new Seller(username, email, password);
 
 
         //We show him list of people with whom he had conversations before
@@ -277,16 +290,29 @@ public class Menu {
 
         }
         for (String line : lines) {
-            String userString = line;
-            String username = userString.substring(0, userString.indexOf(','));
-            userString = userString.substring(userString.indexOf(',') + 1);
-            String password = userString.substring(0, userString.indexOf(','));
-            userString = userString.substring(userString.indexOf(',') + 1);
-            boolean isBuyer = userString.equalsIgnoreCase("b");
-            if (isBuyer) {
-                users.add(new Buyer(username, password));
-            } else {
-                users.add(new Seller(username, password));
+            if (!line.isEmpty()) {
+                ArrayList<String> user = customSplitSpecific(line);
+                String username = user.get(0);
+                String email = user.get(1);
+                String password = user.get(2);
+                boolean isBuyer = user.get(3).equalsIgnoreCase("b");
+                String blockedUsers = user.get(4);
+                ArrayList<String> blockedUsernames = new ArrayList<>();
+                do {
+
+                    if (!blockedUsers.contains(",")) {
+                        blockedUsernames.add(blockedUsers);
+                        blockedUsers = "";
+                    } else {
+                        blockedUsernames.add(blockedUsers.substring(0, blockedUsers.indexOf(",")));
+                        blockedUsers = blockedUsers.substring(blockedUsers.indexOf(",") + 1);
+                    }
+                } while (!blockedUsers.isEmpty());
+                if (isBuyer) {
+                    users.add(new Buyer(username, email, password, blockedUsernames));
+                } else {
+                    users.add(new Seller(username, email, password, blockedUsernames));
+                }
             }
         }
         return users;
@@ -294,24 +320,65 @@ public class Menu {
 
     public static void writeUsers(String filename, ArrayList<User> users) {
         File f = new File(filename);
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(new FileOutputStream(f, false));
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, false))) {
             for (User u : users) {
+                pw.print("\"" + u.getUsername() + "\",\"" + u.getEmail() + "\",\"" + u.getPassword());
                 if (u instanceof Buyer) {
-                    pw.println(u.getUsername() + ',' + u.getPassword() + ",b");
+                    pw.print("\",\"b\",\"");
                 } else {
-                    pw.println(u.getUsername() + ',' + u.getPassword() + ",s");
+                    pw.print("\",\"s\",\"");
                 }
+                if (u.getBlockedUsers().size() > 0) {
+                    ArrayList<User> blockedUsers = u.getBlockedUsers();
+                    ArrayList<String> blockedUsernames = new ArrayList<>();
+                    for (User bUser : blockedUsers) {
+                        blockedUsernames.add(bUser.getUsername());
+                    }
+                    for (int i = 0; i < blockedUsernames.size(); i++) {
+                        if (i != blockedUsers.size() - 1) {
+                            pw.print(blockedUsernames.get(i) + ",");
+                        } else {
+                            pw.print(blockedUsernames.get(i) + "\"");
+                        }
+                    }
+                } else {
+                    pw.print("\"");
+                }
+                pw.println();
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } finally {
-            if (pw != null) {
-                pw.close();
+        }
+    }
+
+    private static ArrayList<String> customSplitSpecific(String s)
+    {
+        ArrayList<String> words = new ArrayList<>();
+        boolean notInsideComma = true;
+        int start =0, end=0;
+        for(int i=0; i<s.length()-1; i++)
+        {
+            if(s.charAt(i)==',' && notInsideComma)
+            {
+                words.add(s.substring(start + 1,i - 1));
+                start = i+1;
+            }
+            else if(s.charAt(i)=='"')
+                notInsideComma=!notInsideComma;
+        }
+        words.add(s.substring(start + 1, s.length() - 1));
+        return words;
+    }
+
+    public static void addBlockedUsers(ArrayList<User> users) {
+        for (User u : users) {
+            ArrayList<String> blockedUsernames = u.getBlockedUsernames();
+            for (String bUser : blockedUsernames) {
+                u.blockUser(bUser, users);
             }
         }
     }
+
 
     public static void saveMessages(User user) throws IOException {
         ArrayList<Message> allMessages = user.getMessages();

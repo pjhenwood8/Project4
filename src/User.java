@@ -5,15 +5,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class User {
-    private String username;
+
+    private String email;
+    private final String username;
     private ArrayList<Message> messages = new ArrayList<>();
 
     private String password;
 
-    private ArrayList<User> blockedUsers;
+    private ArrayList<User> blockedUsers = new ArrayList<>();
 
-    public User(String username, String password) {
+    private ArrayList<String> blockedUsernames = new ArrayList<>();
+
+    public User(String username, String email, String password) {
         this.username = username;
+        this.email = email;
         this.password = password;
         try {
             messages = parseMessages();
@@ -35,12 +40,25 @@ public class User {
         }
     }
 
+    public User(String username, String email, String password, ArrayList<String> blockedUsernames) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.blockedUsernames = blockedUsernames;
+        try {
+            messages = parseMessages();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public ArrayList<Message> getMessages() {
@@ -113,10 +131,22 @@ public class User {
     }
 
     public void removeUser() {
-        username = null;
+        email = null;
         password = null;
         blockedUsers = null;
         messages = null;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public ArrayList<String> getBlockedUsernames() {
+        return blockedUsernames;
+    }
+
+    public ArrayList<User> getBlockedUsers() {
+        return blockedUsers;
     }
 
 }
