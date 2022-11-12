@@ -8,14 +8,18 @@ public class Message {
     private String sender;
     private String receiver;
     private String message;
+    private boolean delBySender;
+    private boolean delByReceiver;
 
-    public Message(int id, String time, String sender, String receiver, String message) {
+    public Message(int id, String time, String sender, String receiver, String message, boolean delBySender, boolean delByReceiver) {
         count++;
         this.id = id;
         this.time = time;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        this.delBySender = delBySender;
+        this.delByReceiver = delByReceiver;
     }
 
     public Message(String sender, String receiver, String message) {
@@ -27,7 +31,24 @@ public class Message {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        delByReceiver = false;
+        delBySender = false;
+    }
 
+    public boolean isDelBySender() {
+        return delBySender;
+    }
+
+    public boolean isDelByReceiver() {
+        return delByReceiver;
+    }
+
+    public void setDelBySender(boolean delBySender) {
+        this.delBySender = delBySender;
+    }
+
+    public void setDelByReceiver(boolean delByReceiver) {
+        this.delByReceiver = delByReceiver;
     }
 
     public int getId() {

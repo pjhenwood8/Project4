@@ -22,6 +22,19 @@ public class User {
         }
     }
 
+    public void refreshMessages() throws IOException {
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i).getSender().equals(username) && messages.get(i).isDelBySender()) {
+                messages.remove(i);
+                i--;
+            }
+            else if (messages.get(i).getReceiver().equals(username) && messages.get(i).isDelByReceiver()) {
+                messages.remove(i);
+                i--;
+            }
+        }
+    }
+
     public String getUsername() {
         return username;
     }
@@ -43,7 +56,7 @@ public class User {
 
         ArrayList<Message> temp = new ArrayList<>();
         for (Message line : wholeFile) {
-            if (line.getSender().equals(username) || line.getReceiver().equals(username)) {
+            if ((line.getSender().equals(username) && !line.isDelBySender()) || (line.getReceiver().equals(username) && !line.isDelBySender())) {
                 temp.add(line);
             }
         }
@@ -59,7 +72,7 @@ public class User {
             for (int i = 0; i < temp.size(); i++) {
                 temp.set(i, temp.get(i).substring(1, temp.get(i).length()-1));
             }
-            fileContent.add(new Message(Integer.parseInt(temp.get(0)),temp.get(1),temp.get(2),temp.get(3),temp.get(4)));
+            fileContent.add(new Message(Integer.parseInt(temp.get(0)),temp.get(1),temp.get(2),temp.get(3),temp.get(4),Boolean.parseBoolean(temp.get(5)),Boolean.parseBoolean(temp.get(6))));
         }
         return fileContent;
     }
