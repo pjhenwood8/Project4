@@ -82,20 +82,31 @@ public class Menu {
                                         if (receiveUser == 0) {                                          // dialog with new user
                                             System.out.println("Enter name of user:");
                                             String newUser = scanner.nextLine();
+                                            boolean alreadyMessaged = false;
+                                            for (String u : listOfUsers) {
+                                                if (u.equals(newUser)) {
+                                                    alreadyMessaged = true;
+                                                    System.out.println("You already messaged this user");
+                                                }
+                                            }
                                             boolean flag = true;
                                             boolean flag1 = true;
+                                            boolean flag2 = true;
                                             for (User value : users) {
                                                 if (value.getUsername().equals(newUser)) {
                                                     flag1 = false;
                                                     if (value instanceof Seller) {
                                                         System.out.println("You can't write to Seller, because you are Seller yourself");
                                                         flag = false;
+                                                    } else if (currUser.getBlockedUsers().contains(value) || value.getBlockedUsers().contains(currUser)) {
+                                                        System.out.println("You can't write to this user because they are blocked");
+                                                        flag2 = false;
                                                     }
                                                 }
                                             }
                                             if (flag1) {
                                                 System.out.println("USER DOES NOT EXIST");
-                                            } else if (flag) {
+                                            } else if (flag && flag2 && !alreadyMessaged) {
                                                 System.out.println("Write your hello message first!");
                                                 String mes = scanner.nextLine();
                                                 ArrayList<Message> temp = user.getMessages();
@@ -281,20 +292,31 @@ public class Menu {
                                             if (receiveUser == 0) {                                          // dialog with new user
                                                 System.out.println("Enter name of user:");
                                                 String newUser = scanner.nextLine();
+                                                boolean alreadyMessaged = false;
+                                                for (String u : listOfUsers) {
+                                                    if (u.equals(newUser)) {
+                                                        alreadyMessaged = true;
+                                                        System.out.println("You already messaged this user");
+                                                    }
+                                                }
                                                 boolean flag = true;
                                                 boolean flag1 = true;
-                                                for (int i = 0; i < users.size(); i++) {
-                                                    if (users.get(i).getUsername().equals(newUser)) {
+                                                boolean flag2 = true;
+                                                for (User value : users) {
+                                                    if (value.getUsername().equals(newUser)) {
                                                         flag1 = false;
-                                                        if (users.get(i) instanceof Buyer) {
+                                                        if (value instanceof Buyer) {
                                                             System.out.println("You can't write to Buyer, because you are Buyer yourself");
                                                             flag = false;
+                                                        } else if (currUser.getBlockedUsers().contains(value) || value.getBlockedUsers().contains(currUser)) {
+                                                            System.out.println("You can't write to this user because they are blocked");
+                                                            flag2 = false;
                                                         }
                                                     }
                                                 }
                                                 if (flag1) {
                                                     System.out.println("USER DOES NOT EXIST");
-                                                } else if (flag) {
+                                                } else if (flag && flag2 && !alreadyMessaged) {
                                                     System.out.println("Write your hello message first!");
                                                     String mes = scanner.nextLine();
                                                     ArrayList<Message> temp = user.getMessages();
