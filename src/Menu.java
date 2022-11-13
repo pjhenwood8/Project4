@@ -117,11 +117,33 @@ public class Menu {
                                             System.out.println("[3] Delete message                        [0] Exit");
                                             int optionChoice = Integer.parseInt(scanner.nextLine());
                                             if (optionChoice == 1) {
-                                                System.out.println("Enter message: ");
-                                                String mes = scanner.nextLine();
-                                                ArrayList<Message> temp = user.getMessages();
-                                                temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
-                                                user.setMessages(temp);
+                                                System.out.println("You want to send a message or upload a txt file?\n[1] Send message\n[2] Upload file");
+                                                int fileOrText = Integer.parseInt(scanner.nextLine());
+                                                if (fileOrText == 1) {
+                                                    System.out.println("Enter message: ");
+                                                    String mes = scanner.nextLine();
+                                                    ArrayList<Message> temp = user.getMessages();
+                                                    temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                                    user.setMessages(temp);
+                                                }
+                                                else if (fileOrText == 2) {
+                                                    System.out.println("Enter name of txt file: ");
+                                                    String fileName = scanner.nextLine();
+                                                    String mes = "";
+                                                    try {
+                                                        BufferedReader bfr = new BufferedReader(new FileReader(new File(fileName)));
+                                                        String st;
+                                                        while ((st = bfr.readLine()) != null) {
+                                                            mes += st + "\n";
+                                                        }
+                                                    }
+                                                    catch (FileNotFoundException e) {
+                                                        System.out.println("I'm sorry but that file does not exist");
+                                                    }
+                                                    ArrayList<Message> temp = user.getMessages();
+                                                    temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                                    user.setMessages(temp);
+                                                }
                                             }
                                             if (optionChoice == 2) {
                                                 messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
@@ -265,11 +287,33 @@ public class Menu {
                                                 System.out.println("[3] Delete message                        [0] Exit");
                                                 int optionChoice = Integer.parseInt(scanner.nextLine());
                                                 if (optionChoice == 1) {
-                                                    System.out.println("Enter message: ");
-                                                    String mes = scanner.nextLine();
-                                                    ArrayList<Message> temp = user.getMessages();
-                                                    temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
-                                                    user.setMessages(temp);
+                                                    System.out.println("You want to send a message or upload a txt file?\n[1] Send message\n[2] Upload file");
+                                                    int fileOrText = Integer.parseInt(scanner.nextLine());
+                                                    if (fileOrText == 1) {
+                                                        System.out.println("Enter message: ");
+                                                        String mes = scanner.nextLine();
+                                                        ArrayList<Message> temp = user.getMessages();
+                                                        temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                                        user.setMessages(temp);
+                                                    }
+                                                    else if (fileOrText == 2) {
+                                                        System.out.println("Enter name of txt file: ");
+                                                        String fileName = scanner.nextLine();
+                                                        String mes = "";
+                                                        try {
+                                                            BufferedReader bfr = new BufferedReader(new FileReader(new File(fileName)));
+                                                            String st;
+                                                            while ((st = bfr.readLine()) != null) {
+                                                                mes += st + "\n";
+                                                            }
+                                                        }
+                                                        catch (FileNotFoundException e) {
+                                                            System.out.println("I'm sorry but that file does not exist");
+                                                        }
+                                                        ArrayList<Message> temp = user.getMessages();
+                                                        temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                                        user.setMessages(temp);
+                                                    }
                                                 }
                                                 if (optionChoice == 2) {
                                                     messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
