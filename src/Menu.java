@@ -12,7 +12,6 @@ public class Menu {
         boolean LoggingIn = true;
         String response;
         User user = null;
-        Scanner scanner = new Scanner(System.in);
         ArrayList<User> users = null;
         System.out.println("Please enter the number corresponding with your option");
         while(LoggingIn) {
@@ -38,10 +37,11 @@ public class Menu {
                     user = null;
             }
         }
+        System.out.println("Finished");
         if(user != null) {
         }
         /* Test to update login.csv*/
-        ArrayList<User> users = readUsers("login.csv");/*
+        /*ArrayList<User> users = readUsers("login.csv");
         addBlockedUsers(users);
         User newUser = new Buyer("Buyer3", "email4@email.com", "password4");
         users.add(newUser);
@@ -151,7 +151,7 @@ public class Menu {
             }
 
         /* User logs in */
-        System.out.println("Enter username: ");
+        /*System.out.println("Enter username: ");
         String username = scanner.nextLine();
         System.out.println("Enter email: ");
         String email = scanner.nextLine();
@@ -163,7 +163,7 @@ public class Menu {
             user = new Buyer(username, email, password);
         else
             user = new Seller(username, email, password);
-
+*/
 
         //We show him list of people with whom he had conversations before
         boolean insideMessageHistory = true;
@@ -471,14 +471,22 @@ public class Menu {
 public static User login(Scanner scanner) {
         ArrayList<String[]> users = new ArrayList<>();
         boolean invEmail = true;
+        String[] temp;
         String email, pass;
         //Add users from file to arraylist
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("login.csv"));
             String line = bfr.readLine();
             while (line != null) {
-                users.add(line.split(","));
+                users.add(line.split(",",5));
                 line = bfr.readLine();
+            }
+            for(int i = 0; i < users.size(); i++){
+                temp = users.get(i);
+                for(int k = 0; k < 4; k++) {
+                    temp[k] = temp[k].substring(1,temp[k].length() - 1);
+                }
+                users.set(i,temp);
             }
             bfr.close();
         } catch (IOException e) {
@@ -490,13 +498,13 @@ public static User login(Scanner scanner) {
             System.out.println("Please enter you password:");
             pass = scanner.nextLine();
             for (int i = 0; i < users.size(); i++) {
-                if (email.equals(users.get(i)[0])) {
+                if (email.equals(users.get(i)[1])) {
                     invEmail = false;
                     if (pass.equals(users.get(i)[2])) {
-                        if (users.get(i)[3].equals("buyer"))
-                            return new Buyer(email,users.get(i)[1],pass);
-                        if (users.get(i)[3].equals("seller"))
-                            return new Seller(email,users.get(i)[1],pass);
+                        if (users.get(i)[3].equals("b"))
+                            return new Buyer(users.get(i)[0],email,pass);
+                        if (users.get(i)[3].equals("s"))
+                            return new Seller(users.get(i)[0],email,pass);
                     }
                 }
             }
@@ -520,17 +528,26 @@ public static User login(Scanner scanner) {
         String pass = "";
         String userType = "";
         String userName = "";
+        String[] temp;
         boolean repeatUser = false;
         boolean invUsername = true;
         boolean invEmail = true;
         boolean invPass = true;
         boolean invBuyer = true;
+
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("login.csv"));
             String line = bfr.readLine();
             while (line != null) {
-                userFile.add(line.split(","));
+                userFile.add(line.split(",",5));
                 line = bfr.readLine();
+            }
+            for(int i = 0; i < userFile.size(); i++){
+                temp = userFile.get(i);
+                for(int k = 0; k < 4; k++) {
+                    temp[k] = temp[k].substring(1,temp[k].length() - 1);
+                }
+                userFile.set(i,temp);
             }
             bfr.close();
         } catch (IOException e) {
@@ -553,7 +570,7 @@ public static User login(Scanner scanner) {
             if (userName.contains(",") || userName == null || userName == "") {
                 System.out.println("That user name was not valid");
                 for(int i = 0; i < userFile.size(); i++) {
-                    if(userName.equals(userFile.get(i)[1]))
+                    if(userName.equals(userFile.get(i)[0]))
                         System.out.println("Someone else has that username please try a different one");
                         repeatUser = true;
                 }
@@ -579,22 +596,24 @@ public static User login(Scanner scanner) {
             System.out.print("Please enter a valid user type:");
             userType = scanner.nextLine();
             if (userType.equalsIgnoreCase("Buyer")) {
-                user = new Buyer(email,userName,pass);
+                userType = "b";
+                user = new Buyer(userName,email,pass);
                 invBuyer = false;
             }else if (userType.equalsIgnoreCase("Seller")) {
-                user = new Seller(email,userName,pass);
+                userType = "s";
+                user = new Seller(userName,email,pass);
                 invBuyer = false;
             } else {
-                System.out.println("That userType was not valid");
+                System.out.println("That user type was not valid");
             }
 
         }
         try {
             PrintWriter pw = new PrintWriter(new FileOutputStream("login.csv", false));
             for (int i = 0; i < userFile.size(); i++) {
-                pw.println(userFile.get(i)[0] + "," + userFile.get(i)[1] + "," + userFile.get(i)[2] + "," + userFile.get(i)[3]);
+                pw.println("\"" + userFile.get(i)[0] + "\"" + "," + "\"" + userFile.get(i)[1] + "\"" + "," + "\"" + userFile.get(i)[2] + "\"" + "," + "\"" + userFile.get(i)[3] + "\"" + "," + userFile.get(i)[4]);
             }
-            pw.println(email + "," + userName + "," + pass + "," + userType);
+            pw.println("\"" + userName + "\"" + "," + "\"" + email + "\"" + "," + "\"" + pass + "\"" + "," + "\"" +userType + "\"" + ",\"\"");
             pw.close();
         } catch (IOException e ) {
             e.printStackTrace();
