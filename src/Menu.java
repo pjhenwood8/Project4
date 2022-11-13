@@ -11,81 +11,114 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
 
         /* Test to update login.csv*/
-        /*ArrayList<User> users = readUsers("login.csv");
+        ArrayList<User> users = readUsers("login.csv");/*
         addBlockedUsers(users);
         User newUser = new Buyer("Buyer3", "email4@email.com", "password4");
         users.add(newUser);
         writeUsers("login.csv", users); */
 
-        User currUser = null;
+
         boolean loggedIn = false;
         boolean online = true;
 
         /* Edit or delete User */
-        /*System.out.println(currUser.getUsername());
+        User currUser = new Buyer("user1", "email@email.com", "password");
+        users.add(currUser);
+        System.out.println(currUser.getUsername());
         System.out.println(currUser.getPassword());
-        while (online) {
-            System.out.println("[3] Account");
-            try {
-                int choice = scanner.nextInt();
-                scanner.nextLine();
-                if (choice == 3) {
-                    do {
-                        System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Exit");
-                        choice = scanner.nextInt();
-                        if (choice > 3) {
-                            throw new InputMismatchException();
-                        }
-                        switch (choice) {
-                            case 1:
-                                scanner.nextLine();
-                                System.out.println("[1] Change Username\n[2] Change Password\n[3] Exit");
+        if (currUser != null) {
+                if (currUser instanceof Buyer) {
+                    System.out.println("[3] Account");
+                } else {
+                    System.out.println("[3] Account\n[4] Create New Store\n[5] Delete Store");
+                }
+
+                try {
+                    int choice = scanner.nextInt();
+                    scanner.nextLine();
+                    switch (choice) {
+                        case 3:
+                            do {
+                                System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Exit");
                                 choice = scanner.nextInt();
-                                String newAccountInfo = "";
                                 if (choice > 3) {
                                     throw new InputMismatchException();
                                 }
                                 switch (choice) {
-                                    case 1 -> {
+                                    case 1:
                                         scanner.nextLine();
-                                        System.out.println("Enter new username:");
-                                        newAccountInfo = scanner.nextLine();
-                                        currUser.setUsername(newAccountInfo);
-                                        System.out.printf("Username changed to: %s%n", newAccountInfo);
-                                    }
-                                    case 2 -> {
+                                        System.out.println("[1] Change Email\n[2] Change Password\n[3] Exit");
+                                        choice = scanner.nextInt();
+                                        String newAccountInfo;
+                                        if (choice > 3) {
+                                            throw new InputMismatchException();
+                                        }
+                                        switch (choice) {
+                                            case 1 -> {
+                                                scanner.nextLine();
+                                                System.out.println("Enter new email:");
+                                                newAccountInfo = scanner.nextLine();
+                                                currUser.setEmail(newAccountInfo);
+                                                System.out.printf("Username changed to: %s%n", newAccountInfo);
+                                            }
+                                            case 2 -> {
+                                                scanner.nextLine();
+                                                System.out.println("Enter new password:");
+                                                newAccountInfo = scanner.nextLine();
+                                                currUser.setPassword(newAccountInfo);
+                                                System.out.printf("Password changed to: %s%n", newAccountInfo);
+                                            }
+                                            case 3 -> scanner.nextLine();
+                                        }
+                                        break;
+                                    case 2:
                                         scanner.nextLine();
-                                        System.out.println("Enter new password:");
-                                        newAccountInfo = scanner.nextLine();
-                                        currUser.setPassword(newAccountInfo);
-                                        System.out.printf("Password changed to: %s%n", newAccountInfo);
-                                    }
-                                    case 3 -> scanner.nextLine();
+                                        System.out.println("Are you sure you want to delete this user? [Y/N]");
+                                        String yesNo = scanner.nextLine();
+                                        if (yesNo.equalsIgnoreCase("Y")) {
+                                            System.out.printf("User [%s] successfully deleted%n", currUser.getUsername());
+                                            currUser.removeUser();
+                                            users.remove(currUser);
+                                            choice = 3;
+                                        }
+                                        break;
+                                    case 3:
+                                        break;
+                                }
+                            } while (choice != 3);
+                            System.out.println(currUser.getUsername());
+                            System.out.println(currUser.getPassword());
+                            break;
+                        case 4:
+                            if (currUser instanceof Buyer) {
+                                break;
+                            } else if (currUser instanceof Seller) {
+                                System.out.println("Enter name for new store");
+                                String storeName = scanner.nextLine();
+                                ((Seller) currUser).createStore(storeName);
+                                break;
+                            }
+                        case 5:
+                            if (currUser instanceof Buyer) {
+                                break;
+                            } else if (currUser instanceof Seller) {
+                                System.out.println("Enter store name to delete");
+                                String storeName = scanner.nextLine();
+                                try {
+                                    ((Seller) currUser).deleteStore(storeName);
+                                } catch (IllegalArgumentException il) {
+                                    System.out.println(il.getMessage());
                                 }
                                 break;
-                            case 2:
-                                scanner.nextLine();
-                                System.out.println("Are you sure you want to delete this user? [Y/N]");
-                                String yesNo = scanner.nextLine();
-                                if (yesNo.equalsIgnoreCase("Y")) {
-                                    System.out.printf("User [%s] successfully deleted%n", currUser.getUsername());
-                                    currUser.removeUser();
-                                    users.remove(currUser);
-                                    choice = 3;
-                                }
-                                break;
-                            case 3:
-                                break;
-                        }
-                    } while (choice != 3);
-                    System.out.println(currUser.getUsername());
-                    System.out.println(currUser.getPassword());
+                            }
+                        default:
+                            break;
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input");
+                    scanner.nextLine();
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input");
-                scanner.nextLine();
             }
-        } */
 
         /* User logs in */
         System.out.println("Enter username: ");
