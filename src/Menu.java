@@ -110,7 +110,14 @@ public class Menu {
                                         while (true) {
                                             messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
                                             for (int i = 0; i < messageHistory.size(); i++) {
-                                                System.out.print(messageHistory.get(i).toString());
+                                                if (messageHistory.get(i).getMessage().contains("\\n")) {
+                                                    Message temp = messageHistory.get(i);
+                                                    String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
+                                                    String ans = String.format("%s   (%s -> %s)%n%s%n", temp.getTime(), temp.getSender(), temp.getReceiver(), ansMes);
+                                                    System.out.print(ans);
+                                                }
+                                                else
+                                                    System.out.print(messageHistory.get(i).toString());
                                             }
                                             System.out.println();
                                             System.out.println("[1] Write message                         [2] Edit message");
@@ -128,6 +135,8 @@ public class Menu {
                                                     pw.println();
                                                     pw.flush();
                                                 }
+                                                System.out.println("Your message history was successfully saved to "+fileName);
+                                                System.out.println();
                                             }
                                             if (optionChoice == 1) {
                                                 System.out.println("You want to send a message or upload a txt file?\n[1] Send message\n[2] Upload file");
@@ -147,7 +156,7 @@ public class Menu {
                                                         BufferedReader bfr = new BufferedReader(new FileReader(new File(fileName)));
                                                         String st;
                                                         while ((st = bfr.readLine()) != null) {
-                                                            mes += st + "\n";
+                                                            mes += st + "\\n";
                                                         }
                                                     }
                                                     catch (FileNotFoundException e) {
@@ -235,9 +244,15 @@ public class Menu {
                                                     user.setMessages(temp);
                                                     System.out.println("Store manager's username is "+users.get(i).getUsername());
                                                     System.out.println("Please wait for his message");
-                                                    ArrayList<Message> messageHistory = parseMessageHistory(currUser, users.get(i).getUsername());
+                                                    ArrayList<Message> messageHistory = parseMessageHistory(user, users.get(i).getUsername());
                                                     for (int k = 0; k < messageHistory.size(); k++) {
-                                                        System.out.print(messageHistory.get(k).toString());                     //we print their message history
+                                                        if (messageHistory.get(i).getMessage().contains("\\n")) {
+                                                            Message tempMes = messageHistory.get(i);
+                                                            String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
+                                                            String ans = String.format("%s   (%s -> %s)%n%s%n", tempMes.getTime(), tempMes.getSender(), tempMes.getReceiver(), ansMes);
+                                                            System.out.print(ans);
+                                                        } else
+                                                            System.out.print(messageHistory.get(i).toString());
                                                     }
                                                 }
                                             }
@@ -284,16 +299,30 @@ public class Menu {
                                                 ArrayList<Message> temp = user.getMessages();
                                                 temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
                                                 user.setMessages(temp);
-                                                messageHistory = parseMessageHistory(user, newUser);
+                                                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
                                                 for (int i = 0; i < messageHistory.size(); i++) {
-                                                    System.out.print(messageHistory.get(i).toString());                     //we print their message history
+                                                    if (messageHistory.get(i).getMessage().contains("\\n")) {
+                                                        Message tempMes = messageHistory.get(i);
+                                                        String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
+                                                        String ans = String.format("%s   (%s -> %s)%n%s%n", tempMes.getTime(), tempMes.getSender(), tempMes.getReceiver(), ansMes);
+                                                        System.out.print(ans);
+                                                    }
+                                                    else
+                                                        System.out.print(messageHistory.get(i).toString());
                                                 }
                                             }
                                         } else {
                                             while (true) {
                                                 messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
                                                 for (int i = 0; i < messageHistory.size(); i++) {
-                                                    System.out.print(messageHistory.get(i).toString());
+                                                    if (messageHistory.get(i).getMessage().contains("\\n")) {
+                                                        Message temp = messageHistory.get(i);
+                                                        String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
+                                                        String ans = String.format("%s   (%s -> %s)%n%s%n", temp.getTime(), temp.getSender(), temp.getReceiver(), ansMes);
+                                                        System.out.print(ans);
+                                                    }
+                                                    else
+                                                        System.out.print(messageHistory.get(i).toString());
                                                 }
                                                 System.out.println();
                                                 System.out.println("[1] Write message                         [2] Edit message");
@@ -311,6 +340,8 @@ public class Menu {
                                                         pw.println();
                                                         pw.flush();
                                                     }
+                                                    System.out.println("Your message history was successfully saved to "+fileName);
+                                                    System.out.println();
                                                 }
                                                 if (optionChoice == 1) {
                                                     System.out.println("You want to send a message or upload a txt file?\n[1] Send message\n[2] Upload file");
@@ -330,7 +361,7 @@ public class Menu {
                                                             BufferedReader bfr = new BufferedReader(new FileReader(new File(fileName)));
                                                             String st;
                                                             while ((st = bfr.readLine()) != null) {
-                                                                mes += st + "\n";
+                                                                mes += st + "\\n";
                                                             }
                                                         }
                                                         catch (FileNotFoundException e) {
