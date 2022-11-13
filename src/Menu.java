@@ -580,23 +580,26 @@ public class Menu {
     }
 public static User login(Scanner scanner) {
         ArrayList<String[]> users = new ArrayList<>();
+        ArrayList<String> tempArrayList = new ArrayList<>();
+        String[] tempArray;
+        ArrayList<String> transferList;
         boolean invEmail = true;
-        String[] temp;
         String email, pass;
         //Add users from file to arraylist
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("login.csv"));
             String line = bfr.readLine();
             while (line != null) {
-                users.add(line.split(",",5));
+                tempArrayList.add(line);
                 line = bfr.readLine();
             }
-            for(int i = 0; i < users.size(); i++){
-                temp = users.get(i);
-                for(int k = 0; k < 4; k++) {
-                    temp[k] = temp[k].substring(1,temp[k].length() - 1);
+            for(int i = 0; i < tempArrayList.size(); i++) {
+                transferList = customSplitSpecific(tempArrayList.get(i));
+                tempArray = new String[transferList.size()];
+                for(int j = 0; j < tempArray.length; j++) {
+                     tempArray[j] = transferList.get(j);
                 }
-                users.set(i,temp);
+                users.add(tempArray);
             }
             bfr.close();
         } catch (IOException e) {
@@ -638,26 +641,28 @@ public static User login(Scanner scanner) {
         String pass = "";
         String userType = "";
         String userName = "";
-        String[] temp;
+        ArrayList<String> tempArrayList = new ArrayList<>();
+        String[] tempArray;
+        ArrayList<String> transferList;
         boolean repeatUser = false;
         boolean invUsername = true;
         boolean invEmail = true;
         boolean invPass = true;
         boolean invBuyer = true;
-
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("login.csv"));
             String line = bfr.readLine();
             while (line != null) {
-                userFile.add(line.split(",",5));
+                tempArrayList.add(line);
                 line = bfr.readLine();
             }
-            for(int i = 0; i < userFile.size(); i++){
-                temp = userFile.get(i);
-                for(int k = 0; k < 4; k++) {
-                    temp[k] = temp[k].substring(1,temp[k].length() - 1);
+            for(int i = 0; i < tempArrayList.size(); i++) {
+                transferList = customSplitSpecific(tempArrayList.get(i));
+                tempArray = new String[transferList.size()];
+                for(int j = 0; j < tempArray.length; j++) {
+                    tempArray[j] = transferList.get(j);
                 }
-                userFile.set(i,temp);
+                userFile.add(tempArray);
             }
             bfr.close();
         } catch (IOException e) {
@@ -667,7 +672,7 @@ public static User login(Scanner scanner) {
         while(invEmail) {
             System.out.print("Please enter a valid email:");
             email = scanner.nextLine();
-            if (email.contains(",") || (!(email.contains("@"))) || email == null || email == "") {
+            if (email.contains(",") || (!(email.contains("@"))) || email == null || email.equals("")) {
                 System.out.println("That email is not valid");
             } else {
                 invEmail = false;
@@ -675,9 +680,9 @@ public static User login(Scanner scanner) {
         }
         System.out.println("A valid username contains no commas");
         while(invUsername){
-            System.out.print("Please enter a valid username (This cannot be changed later):");
+            System.out.print("Please enter a valid username:");
             userName = scanner.nextLine();
-            if (userName.contains(",") || userName == null || userName == "") {
+            if (userName.contains(",") || userName == null || userName.equals("")) {
                 System.out.println("That user name was not valid");
                 for(int i = 0; i < userFile.size(); i++) {
                     if(userName.equals(userFile.get(i)[0]))
@@ -691,11 +696,10 @@ public static User login(Scanner scanner) {
                 invUsername = false;
             }
         }
-        System.out.println("A valid password contains no commas");
         while(invPass){
-            System.out.print("Please enter a valid password:");
+            System.out.print("Please enter a password:");
             pass = scanner.nextLine();
-            if (pass.contains(",") || pass == null || pass == "") {
+            if (pass == null || pass == "") {
                 System.out.println("That password was not valid");
             } else {
                 invPass = false;
@@ -730,7 +734,7 @@ public static User login(Scanner scanner) {
         }
         return user;
     }
-
+    
     public static ArrayList<User> readUsers(String filename) throws FileNotFoundException {
         File f = new File(filename);
         ArrayList<String> lines = new ArrayList<>();
