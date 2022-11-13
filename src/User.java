@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class User {
         }
     }
 
-    public void refreshMessages() throws IOException {
+    public void refreshMessages() {
         for (int i = 0; i < messages.size(); i++) {
             if (messages.get(i).getSender().equals(username) && messages.get(i).isDelBySender()) {
                 messages.remove(i);
@@ -83,7 +82,7 @@ public class User {
 
     private ArrayList<Message> readWholeFile() throws IOException {
         ArrayList<Message> fileContent = new ArrayList<>();
-        BufferedReader bfr = new BufferedReader(new FileReader(new File("messages.csv")));
+        BufferedReader bfr = new BufferedReader(new FileReader("messages.csv"));
         String st;
         while ((st = bfr.readLine()) != null) {
             ArrayList<String> temp = customSplitSpecific(st);

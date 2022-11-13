@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Message {
-    private int id;
+    private final int id;
     private static int count = 0;
     private final String time;
     private String sender;
@@ -84,7 +84,6 @@ public class Message {
     }
 
     public String toString() {
-        String ans = String.format("%s   (%s -> %s)%n%s%n", time, sender, receiver, message);
-        return ans;
+        return String.format("%s   (%s -> %s)%n%s%n", time, sender, receiver, message);
     }
 }
