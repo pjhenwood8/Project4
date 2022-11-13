@@ -12,7 +12,8 @@ public class Menu {
         boolean LoggingIn = true;
         String response;
         User user = null;
-        ArrayList<User> users = null;
+        User currUser = null;
+        ArrayList<User> users = readUsers("login.csv");
         System.out.println("Please enter the number corresponding with your option");
         while(LoggingIn) {
             System.out.println("1. Login\n2. Create Account\n3. Exit");
@@ -39,48 +40,31 @@ public class Menu {
         }
         System.out.println("Finished");
         if(user != null) {
+            currUser = user;
+            users.add(currUser);
         }
-        /* Test to update login.csv*/
-        /*ArrayList<User> users = readUsers("login.csv");
-        addBlockedUsers(users);
-        User newUser = new Buyer("Buyer3", "email4@email.com", "password4");
-        users.add(newUser);
-        writeUsers("login.csv", users); */
 
-
-        boolean loggedIn = false;
         boolean online = true;
-
-        /* Edit or delete User */
-        User currUser = new Buyer("user1", "email@email.com", "password");
-        users.add(currUser);
-        System.out.println(currUser.getUsername());
-        System.out.println(currUser.getPassword());
         if (currUser != null) {
-                if (currUser instanceof Buyer) {
-                    System.out.println("[3] Account");
-                } else {
-                    System.out.println("[3] Account\n[4] Create New Store\n[5] Delete Store");
-                }
-
                 try {
+                    System.out.println("[1] Messages\n[2] Statistics\n[3] Account\n[0] Exit");
                     int choice = scanner.nextInt();
                     scanner.nextLine();
                     switch (choice) {
                         case 3:
                             do {
-                                System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Exit");
+                                System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Create New Store\n[4] Delete Store\n[0] Exit");
                                 choice = scanner.nextInt();
-                                if (choice > 3) {
+                                if (choice > 4) {
                                     throw new InputMismatchException();
                                 }
                                 switch (choice) {
                                     case 1:
                                         scanner.nextLine();
-                                        System.out.println("[1] Change Email\n[2] Change Password\n[3] Exit");
+                                        System.out.println("[1] Change Email\n[2] Change Password\n[0] Exit");
                                         choice = scanner.nextInt();
                                         String newAccountInfo;
-                                        if (choice > 3) {
+                                        if (choice > 2) {
                                             throw new InputMismatchException();
                                         }
                                         switch (choice) {
@@ -89,7 +73,7 @@ public class Menu {
                                                 System.out.println("Enter new email:");
                                                 newAccountInfo = scanner.nextLine();
                                                 currUser.setEmail(newAccountInfo);
-                                                System.out.printf("Username changed to: %s%n", newAccountInfo);
+                                                System.out.printf("Email changed to: %s%n", newAccountInfo);
                                             }
                                             case 2 -> {
                                                 scanner.nextLine();
@@ -110,38 +94,38 @@ public class Menu {
                                             currUser.removeUser();
                                             users.remove(currUser);
                                             choice = 3;
+                                            currUser = null;
                                         }
                                         break;
                                     case 3:
+                                        if (currUser instanceof Buyer) {
+                                            break;
+                                        } else if (currUser instanceof Seller) {
+                                            System.out.println("Enter name for new store");
+                                            String storeName = scanner.nextLine();
+                                            ((Seller) currUser).createStore(storeName);
+                                            break;
+                                        }
+                                    case 4:
+                                        if (currUser instanceof Buyer) {
+                                            break;
+                                        } else if (currUser instanceof Seller) {
+                                            System.out.println("Enter store name to delete");
+                                            String storeName = scanner.nextLine();
+                                            try {
+                                                ((Seller) currUser).deleteStore(storeName);
+                                            } catch (IllegalArgumentException il) {
+                                                System.out.println(il.getMessage());
+                                            }
+                                            break;
+                                        }
+                                    default:
                                         break;
                                 }
-                            } while (choice != 3);
-                            System.out.println(currUser.getUsername());
-                            System.out.println(currUser.getPassword());
+                            } while (choice != 0 && currUser != null);
                             break;
-                        case 4:
-                            if (currUser instanceof Buyer) {
-                                break;
-                            } else if (currUser instanceof Seller) {
-                                System.out.println("Enter name for new store");
-                                String storeName = scanner.nextLine();
-                                ((Seller) currUser).createStore(storeName);
-                                break;
-                            }
-                        case 5:
-                            if (currUser instanceof Buyer) {
-                                break;
-                            } else if (currUser instanceof Seller) {
-                                System.out.println("Enter store name to delete");
-                                String storeName = scanner.nextLine();
-                                try {
-                                    ((Seller) currUser).deleteStore(storeName);
-                                } catch (IllegalArgumentException il) {
-                                    System.out.println(il.getMessage());
-                                }
-                                break;
-                            }
                         default:
+                            online = false;
                             break;
                     }
                 } catch (InputMismatchException e) {
@@ -324,63 +308,6 @@ public class Menu {
         pw.flush();
     } */
 
-    public static ArrayList<User> readUsers(String filename) throws FileNotFoundException {
-        File f = new File(filename);
-        ArrayList<String> lines = new ArrayList<>();
-        BufferedReader bfr = null;
-        ArrayList<User> users = new ArrayList<>();
-        if (!f.exists()) {
-            throw new FileNotFoundException();
-        } else {
-            try {
-                bfr = new BufferedReader(new FileReader(f));
-                String read = bfr.readLine();
-                while (read != null) {
-                    lines.add(read);
-                    read = bfr.readLine();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    if (bfr != null) {
-                        bfr.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        for (String line : lines) {
-            if (!line.isEmpty()) {
-                ArrayList<String> user = customSplitSpecific(line);
-                String username = user.get(0);
-                String email = user.get(1);
-                String password = user.get(2);
-                boolean isBuyer = user.get(3).equalsIgnoreCase("b");
-                String blockedUsers = user.get(4);
-                ArrayList<String> blockedUsernames = new ArrayList<>();
-                do {
-
-                    if (!blockedUsers.contains(",")) {
-                        blockedUsernames.add(blockedUsers);
-                        blockedUsers = "";
-                    } else {
-                        blockedUsernames.add(blockedUsers.substring(0, blockedUsers.indexOf(",")));
-                        blockedUsers = blockedUsers.substring(blockedUsers.indexOf(",") + 1);
-                    }
-                } while (!blockedUsers.isEmpty());
-                if (isBuyer) {
-                    users.add(new Buyer(username, email, password, blockedUsernames));
-                } else {
-                    users.add(new Seller(username, email, password, blockedUsernames));
-                }
-            }
-        }
-        return users;
-    }
-
     public static void writeUsers(String filename, ArrayList<User> users) {
         File f = new File(filename);
         try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, false))) {
@@ -406,6 +333,19 @@ public class Menu {
                     }
                 } else {
                     pw.print("\"");
+                }
+                if (u instanceof Seller) {
+                    if (((Seller) u).getStores().size() > 0) {
+                        for (int i = 0; i < ((Seller) u).getStores().size(); i++) {
+                            if (i != ((Seller) u).getStores().size() - 1) {
+                                pw.print(",\"" + ((Seller) u).getStores().get(i) + ",");
+                            } else {
+                                pw.print(((Seller) u).getStores().get(i) + "\"");
+                            }
+                        }
+                    } else {
+                        pw.print(",\"\"");
+                    }
                 }
                 pw.println();
             }
@@ -619,6 +559,76 @@ public static User login(Scanner scanner) {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public static ArrayList<User> readUsers(String filename) throws FileNotFoundException {
+        File f = new File(filename);
+        ArrayList<String> lines = new ArrayList<>();
+        BufferedReader bfr = null;
+        ArrayList<User> users = new ArrayList<>();
+        if (!f.exists()) {
+            throw new FileNotFoundException("File doesn't exist");
+        } else {
+            try {
+                bfr = new BufferedReader(new FileReader(f));
+                String read = bfr.readLine();
+                while (read != null) {
+                    lines.add(read);
+                    read = bfr.readLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (bfr != null) {
+                        bfr.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        for (String line : lines) {
+            if (!line.isEmpty()) {
+                ArrayList<String> user = customSplitSpecific(line);
+                String username = user.get(0);
+                String email = user.get(1);
+                String password = user.get(2);
+                boolean isBuyer = user.get(3).equalsIgnoreCase("b");
+                String blockedUsers = user.get(4);
+                ArrayList<String> blockedUsernames = new ArrayList<>();
+                do {
+
+                    if (!blockedUsers.contains(",")) {
+                        blockedUsernames.add(blockedUsers);
+                        blockedUsers = "";
+                    } else {
+                        blockedUsernames.add(blockedUsers.substring(0, blockedUsers.indexOf(",")));
+                        blockedUsers = blockedUsers.substring(blockedUsers.indexOf(",") + 1);
+                    }
+                } while (!blockedUsers.isEmpty());
+                if (isBuyer) {
+                    users.add(new Buyer(username, email, password, blockedUsernames));
+                } else {
+                    Seller seller = new Seller(username, email, password, blockedUsernames);
+                    String strStores = user.get(5);
+                    if (strStores != null) {
+                        do {
+                            if (!strStores.contains(",")) {
+                                seller.createStore(strStores);
+                                strStores = "";
+                            } else {
+                                seller.createStore(strStores.substring(0, strStores.indexOf(",")));
+                                strStores = strStores.substring(strStores.indexOf(",") + 1);
+                            }
+                        } while (!strStores.isEmpty());
+                    }
+                    users.add(seller);
+                }
+            }
+        }
+        return users;
     }
 }
 

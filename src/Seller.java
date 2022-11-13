@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Seller extends User {
 
-    private ArrayList<String> stores;
+    private ArrayList<String> stores = new ArrayList<>();
 
     public Seller(String username, String email, String password) {
         super(username, email, password);
@@ -29,7 +29,7 @@ public class Seller extends User {
         }
     }
 
-    public ArrayList<String> getStore() {
+    public ArrayList<String> getStores() {
         return stores;
     }
 
