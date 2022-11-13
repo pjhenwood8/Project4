@@ -238,6 +238,14 @@ public class Menu {
                                     if (makeChoice == 0) {
 
                                     } else if (makeChoice == 1) {
+                                        System.out.println("List of Stores:");
+                                        for (User value : users) {
+                                            if (value instanceof Seller) {
+                                                for (String storeName: ((Seller) value).getStores()) {
+                                                    System.out.println(storeName);
+                                                }
+                                            }
+                                        }
                                         System.out.println("Enter name of the store");
                                         String store = scanner.nextLine();
                                         for (int i = 0; i < users.size(); i++) {
@@ -257,20 +265,31 @@ public class Menu {
                                                                 if (!s.getUserMessaged().contains(currUser)) {
                                                                     s.addUserMessaged((Buyer) currUser);
                                                                 }
+                                                                for (Store st : stores) {
+                                                                    if(s.getStoreName().equalsIgnoreCase(st.getStoreName())){
+                                                                        st.addMessagesReceived();
+                                                                        if (!st.getUserMessaged().contains(currUser)) {
+                                                                            st.addUserMessaged((Buyer) currUser);
+                                                                        }
+                                                                    }
+                                                                }
+
                                                                 writeStores("stores.csv", stores);
                                                             }
                                                         }
                                                         ArrayList<Message> messageHistory = parseMessageHistory(user, users.get(i).getUsername());
                                                         for (int k = 0; k < messageHistory.size(); k++) {
-                                                            if (messageHistory.get(i).getMessage().contains("\\n")) {
-                                                                Message tempMes = messageHistory.get(i);
-                                                                String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
+                                                            if (messageHistory.get(k).getMessage().contains("\\n")) {
+                                                                Message tempMes = messageHistory.get(k);
+                                                                String ansMes = messageHistory.get(k).getMessage().replaceAll("\\\\n", "\n");
                                                                 String ans = String.format("%s   (%s -> %s)%n%s%n", tempMes.getTime(), tempMes.getSender(), tempMes.getReceiver(), ansMes);
                                                                 System.out.print(ans);
                                                             } else {
-                                                                System.out.print(messageHistory.get(i).toString());
+                                                                System.out.print(messageHistory.get(k).toString());
                                                             }
                                                         }
+                                                    } else {
+                                                        System.out.println("That store doesn't Exist!");
                                                     }
                                                 }
                                             }
@@ -559,6 +578,7 @@ public class Menu {
                 System.out.println("Thank you for using the messaging service");
             }
             writeUsers("login.csv", users);
+            writeStores("stores.csv", stores);
         }
 
         //store.csv test
@@ -633,7 +653,7 @@ public class Menu {
                     }
                 }
                 if (u instanceof Seller) {
-                    if (((Seller) u).getStores().size() > 0) {
+                    if (((Seller) u).getStores().size() > 1) {
                         for (int i = 0; i < ((Seller) u).getStores().size(); i++) {
                             if (i != ((Seller) u).getStores().size() - 1) {
                                 pw.print(",\"" + ((Seller) u).getStores().get(i) + ",");
@@ -641,6 +661,8 @@ public class Menu {
                                 pw.print(((Seller) u).getStores().get(i) + "\"");
                             }
                         }
+                    } else if (((Seller) u).getStores().size() == 1) {
+                        pw.print(",\"" + ((Seller) u).getStores().get(0) + "\"");
                     } else {
                         pw.print("\"\"");
                     }
