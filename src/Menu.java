@@ -52,103 +52,273 @@ public class Menu {
                     scanner.nextLine();
                     switch (choice) {
                         case 1:
-                            while (true) {
-                                ArrayList<Message> messageHistory;
-                                String[] listOfUsers = parseUsers(user);
-                                for (int i = 0; i < listOfUsers.length; i++) {
-                                    System.out.printf("[%d] %s%n", i + 1, listOfUsers[i]);
-                                }
-                                System.out.printf("[%d] %s%n", 0, "Start new dialog");           // We provide an option to start new dialog
-                                System.out.printf("[%d] %s%n", -1, "Exit");
-                                int receiveUser = Integer.parseInt(scanner.nextLine());          // He makes the choice
-                                if (receiveUser == -1) {
-                                    break;
-                                }
-                                if (receiveUser == 0) {                                          // dialog with new user
-                                    System.out.println("Enter name of user:");
-                                    String newUser = scanner.nextLine();
-                                    System.out.println("Write your hello message first!");
-                                    String mes = scanner.nextLine();
-                                    ArrayList<Message> temp = user.getMessages();
-                                    temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
-                                    user.setMessages(temp);
-                                    messageHistory = parseMessageHistory(user, newUser);
-                                    for (int i = 0; i < messageHistory.size(); i++) {
-                                        System.out.print(messageHistory.get(i).toString());                     //we print their message history
+                            if (currUser instanceof Seller) {
+                                while (true) {
+                                    ArrayList<Message> messageHistory;
+                                    String[] listOfUsers = parseUsers(user);
+                                    for (int i = 0; i < listOfUsers.length; i++) {
+                                        System.out.printf("[%d] %s%n", i + 1, listOfUsers[i]);
                                     }
-                                } else {
-                                    while (true) {
-                                        messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                                        for (int i = 0; i < messageHistory.size(); i++) {
-                                            System.out.print(messageHistory.get(i).toString());
+                                    System.out.printf("[%d] %s%n", 0, "Start new dialog");           // We provide an option to start new dialog
+                                    System.out.printf("[%d] %s%n", -1, "Exit");
+                                    int receiveUser = Integer.parseInt(scanner.nextLine());          // He makes the choice
+                                    if (receiveUser == -1) {
+                                        break;
+                                    }
+                                    if (receiveUser == 0) {                                          // dialog with new user
+                                        System.out.println("Enter name of user:");
+                                        String newUser = scanner.nextLine();
+                                        boolean flag = true;
+                                        boolean flag1 = true;
+                                        for (int i = 0; i < users.size(); i++) {
+                                            if (users.get(i).getUsername().equals(newUser)) {
+                                                flag1 = false;
+                                                if (users.get(i) instanceof Seller && currUser instanceof Seller) {
+                                                    System.out.println("You can't write to Seller, because you are Seller yourself");
+                                                    flag = false;
+                                                }
+                                                if (users.get(i) instanceof Buyer && currUser instanceof Buyer) {
+                                                    System.out.println("You can't write to Buyer, because you are Buyer yourself");
+                                                    flag = false;
+                                                }
+                                            }
                                         }
-                                        System.out.println();
-                                        System.out.println("[1] Write message                         [2] Edit message");
-                                        System.out.println("[3] Delete message                        [0] Exit");
-                                        int optionChoice = Integer.parseInt(scanner.nextLine());
-                                        if (optionChoice == 1) {
-                                            System.out.println("Enter message: ");
+                                        if (flag1) {
+                                            System.out.println("USER DOES NOT EXIST");
+                                        } else if (flag) {
+                                            System.out.println("Write your hello message first!");
                                             String mes = scanner.nextLine();
                                             ArrayList<Message> temp = user.getMessages();
-                                            temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                            temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
                                             user.setMessages(temp);
+                                            messageHistory = parseMessageHistory(user, newUser);
+                                            for (int i = 0; i < messageHistory.size(); i++) {
+                                                System.out.print(messageHistory.get(i).toString());                     //we print their message history
+                                            }
                                         }
-                                        if (optionChoice == 2) {
+                                    } else {
+                                        while (true) {
                                             messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                                            ArrayList<Message> userIsSender = new ArrayList<>();
-                                            int i = 0;
-                                            while (i < messageHistory.size()) {
-                                                if (messageHistory.get(i).getSender().equals(user.getUsername())) {
+                                            for (int i = 0; i < messageHistory.size(); i++) {
+                                                System.out.print(messageHistory.get(i).toString());
+                                            }
+                                            System.out.println();
+                                            System.out.println("[1] Write message                         [2] Edit message");
+                                            System.out.println("[3] Delete message                        [0] Exit");
+                                            int optionChoice = Integer.parseInt(scanner.nextLine());
+                                            if (optionChoice == 1) {
+                                                System.out.println("Enter message: ");
+                                                String mes = scanner.nextLine();
+                                                ArrayList<Message> temp = user.getMessages();
+                                                temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                                user.setMessages(temp);
+                                            }
+                                            if (optionChoice == 2) {
+                                                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                                                ArrayList<Message> userIsSender = new ArrayList<>();
+                                                int i = 0;
+                                                while (i < messageHistory.size()) {
+                                                    if (messageHistory.get(i).getSender().equals(user.getUsername())) {
+                                                        userIsSender.add(messageHistory.get(i));
+                                                        System.out.printf("[%d] " + messageHistory.get(i).toString(), i + 1);
+                                                        i++;
+                                                    } else
+                                                        System.out.print(messageHistory.get(i).toString());
+                                                }
+                                                System.out.println("Choose message to edit");
+                                                choice = Integer.parseInt(scanner.nextLine());
+                                                System.out.println("To which message you want to change it?");
+                                                String msg = scanner.nextLine();
+                                                Message temp = userIsSender.get(choice - 1);
+                                                for (int j = 0; j < messageHistory.size(); j++) {
+                                                    if (messageHistory.get(j).getId() == temp.getId()) {
+                                                        messageHistory.get(j).setMessage(msg);
+                                                    }
+                                                }
+                                            }
+                                            if (optionChoice == 3) {
+                                                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                                                ArrayList<Message> userIsSender = new ArrayList<>();
+                                                int i = 0;
+                                                while (i < messageHistory.size()) {
                                                     userIsSender.add(messageHistory.get(i));
                                                     System.out.printf("[%d] " + messageHistory.get(i).toString(), i + 1);
                                                     i++;
-                                                } else
-                                                    System.out.print(messageHistory.get(i).toString());
-                                            }
-                                            System.out.println("Choose message to edit");
-                                            choice = Integer.parseInt(scanner.nextLine());
-                                            System.out.println("To which message you want to change it?");
-                                            String msg = scanner.nextLine();
-                                            Message temp = userIsSender.get(choice - 1);
-                                            for (int j = 0; j < messageHistory.size(); j++) {
-                                                if (messageHistory.get(j).getId() == temp.getId()) {
-                                                    messageHistory.get(j).setMessage(msg);
                                                 }
-                                            }
-                                        }
-                                        if (optionChoice == 3) {
-                                            messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                                            ArrayList<Message> userIsSender = new ArrayList<>();
-                                            int i = 0;
-                                            while (i < messageHistory.size()) {
-                                                userIsSender.add(messageHistory.get(i));
-                                                System.out.printf("[%d] " + messageHistory.get(i).toString(), i + 1);
-                                                i++;
-                                            }
-                                            System.out.println("Choose message to delete");
-                                            choice = Integer.parseInt(scanner.nextLine());
-                                            Message temp = userIsSender.get(choice - 1);
-                                            ArrayList<Message> allUserMessages = user.getMessages();
-                                            for (int j = 0; j < allUserMessages.size(); j++) {
-                                                if (allUserMessages.get(j).getId() == temp.getId()) {
-                                                    if (temp.getSender().equals(user.getUsername()))
-                                                        allUserMessages.get(j).setDelBySender(true);
-                                                    else
-                                                        allUserMessages.get(j).setDelByReceiver(true);
-                                                    user.setMessages(allUserMessages);
-                                                    break;
+                                                System.out.println("Choose message to delete");
+                                                choice = Integer.parseInt(scanner.nextLine());
+                                                Message temp = userIsSender.get(choice - 1);
+                                                ArrayList<Message> allUserMessages = user.getMessages();
+                                                for (int j = 0; j < allUserMessages.size(); j++) {
+                                                    if (allUserMessages.get(j).getId() == temp.getId()) {
+                                                        if (temp.getSender().equals(user.getUsername()))
+                                                            allUserMessages.get(j).setDelBySender(true);
+                                                        else
+                                                            allUserMessages.get(j).setDelByReceiver(true);
+                                                        user.setMessages(allUserMessages);
+                                                        break;
+                                                    }
                                                 }
+                                                user.refreshMessages();
                                             }
-                                            user.refreshMessages();
-                                        }
-                                        if (optionChoice == 0) {
-                                            //insideMessageHistory = false;
-                                            break;
+                                            if (optionChoice == 0) {
+                                                //insideMessageHistory = false;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
+                                saveMessages(user);
                             }
-                            saveMessages(user);
+                            else if (currUser instanceof Buyer) {
+                                System.out.println("[1] Write to store\n[2] Write to seller\n[0] Exit");
+                                int makeChoice = Integer.parseInt(scanner.nextLine());
+                                if (makeChoice == 0) {
+
+                                }
+                                if (makeChoice == 1) {
+                                    System.out.println("Enter name of the store");
+                                    String store = scanner.nextLine();
+                                    for (int i = 0; i < users.size(); i++) {
+                                        if (users.get(i) instanceof Seller) {
+                                            for (int j = 0; j < ((Seller) users.get(i)).getStores().size(); j++) {
+                                                if (((Seller) users.get(i)).getStores().get(j).equals(store)) {
+                                                    System.out.println("Enter message you want to send to that store");
+                                                    String msg = scanner.nextLine();
+                                                    ArrayList<Message> temp = currUser.getMessages();
+                                                    temp.add(new Message(currUser.getUsername(), users.get(i).getUsername(), msg));              // We should check if user exists in the future
+                                                    user.setMessages(temp);
+                                                    System.out.println("Store manager's username is "+users.get(i).getUsername());
+                                                    System.out.println("Please wait for his message");
+                                                    ArrayList<Message> messageHistory = parseMessageHistory(currUser, users.get(i).getUsername());
+                                                    for (int k = 0; k < messageHistory.size(); k++) {
+                                                        System.out.print(messageHistory.get(k).toString());                     //we print their message history
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    saveMessages(currUser);
+                                }
+                                if (makeChoice == 2) {
+                                    while (true) {
+                                        ArrayList<Message> messageHistory;
+                                        String[] listOfUsers = parseUsers(user);
+                                        for (int i = 0; i < listOfUsers.length; i++) {
+                                            System.out.printf("[%d] %s%n", i + 1, listOfUsers[i]);
+                                        }
+                                        System.out.printf("[%d] %s%n", 0, "Start new dialog");           // We provide an option to start new dialog
+                                        System.out.printf("[%d] %s%n", -1, "Exit");
+                                        int receiveUser = Integer.parseInt(scanner.nextLine());          // He makes the choice
+                                        if (receiveUser == -1) {
+                                            break;
+                                        }
+                                        if (receiveUser == 0) {                                          // dialog with new user
+                                            System.out.println("Enter name of user:");
+                                            String newUser = scanner.nextLine();
+                                            boolean flag = true;
+                                            boolean flag1 = true;
+                                            for (int i = 0; i < users.size(); i++) {
+                                                if (users.get(i).getUsername().equals(newUser)) {
+                                                    flag1 = false;
+                                                    if (users.get(i) instanceof Seller && currUser instanceof Seller) {
+                                                        System.out.println("You can't write to Seller, because you are Seller yourself");
+                                                        flag = false;
+                                                    }
+                                                    if (users.get(i) instanceof Buyer && currUser instanceof Buyer) {
+                                                        System.out.println("You can't write to Buyer, because you are Buyer yourself");
+                                                        flag = false;
+                                                    }
+                                                }
+                                            }
+                                            if (flag1) {
+                                                System.out.println("USER DOES NOT EXIST");
+                                            } else if (flag) {
+                                                System.out.println("Write your hello message first!");
+                                                String mes = scanner.nextLine();
+                                                ArrayList<Message> temp = user.getMessages();
+                                                temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
+                                                user.setMessages(temp);
+                                                messageHistory = parseMessageHistory(user, newUser);
+                                                for (int i = 0; i < messageHistory.size(); i++) {
+                                                    System.out.print(messageHistory.get(i).toString());                     //we print their message history
+                                                }
+                                            }
+                                        } else {
+                                            while (true) {
+                                                messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                                                for (int i = 0; i < messageHistory.size(); i++) {
+                                                    System.out.print(messageHistory.get(i).toString());
+                                                }
+                                                System.out.println();
+                                                System.out.println("[1] Write message                         [2] Edit message");
+                                                System.out.println("[3] Delete message                        [0] Exit");
+                                                int optionChoice = Integer.parseInt(scanner.nextLine());
+                                                if (optionChoice == 1) {
+                                                    System.out.println("Enter message: ");
+                                                    String mes = scanner.nextLine();
+                                                    ArrayList<Message> temp = user.getMessages();
+                                                    temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                                    user.setMessages(temp);
+                                                }
+                                                if (optionChoice == 2) {
+                                                    messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                                                    ArrayList<Message> userIsSender = new ArrayList<>();
+                                                    int i = 0;
+                                                    while (i < messageHistory.size()) {
+                                                        if (messageHistory.get(i).getSender().equals(user.getUsername())) {
+                                                            userIsSender.add(messageHistory.get(i));
+                                                            System.out.printf("[%d] " + messageHistory.get(i).toString(), i + 1);
+                                                            i++;
+                                                        } else
+                                                            System.out.print(messageHistory.get(i).toString());
+                                                    }
+                                                    System.out.println("Choose message to edit");
+                                                    choice = Integer.parseInt(scanner.nextLine());
+                                                    System.out.println("To which message you want to change it?");
+                                                    String msg = scanner.nextLine();
+                                                    Message temp = userIsSender.get(choice - 1);
+                                                    for (int j = 0; j < messageHistory.size(); j++) {
+                                                        if (messageHistory.get(j).getId() == temp.getId()) {
+                                                            messageHistory.get(j).setMessage(msg);
+                                                        }
+                                                    }
+                                                }
+                                                if (optionChoice == 3) {
+                                                    messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
+                                                    ArrayList<Message> userIsSender = new ArrayList<>();
+                                                    int i = 0;
+                                                    while (i < messageHistory.size()) {
+                                                        userIsSender.add(messageHistory.get(i));
+                                                        System.out.printf("[%d] " + messageHistory.get(i).toString(), i + 1);
+                                                        i++;
+                                                    }
+                                                    System.out.println("Choose message to delete");
+                                                    choice = Integer.parseInt(scanner.nextLine());
+                                                    Message temp = userIsSender.get(choice - 1);
+                                                    ArrayList<Message> allUserMessages = user.getMessages();
+                                                    for (int j = 0; j < allUserMessages.size(); j++) {
+                                                        if (allUserMessages.get(j).getId() == temp.getId()) {
+                                                            if (temp.getSender().equals(user.getUsername()))
+                                                                allUserMessages.get(j).setDelBySender(true);
+                                                            else
+                                                                allUserMessages.get(j).setDelByReceiver(true);
+                                                            user.setMessages(allUserMessages);
+                                                            break;
+                                                        }
+                                                    }
+                                                    user.refreshMessages();
+                                                }
+                                                if (optionChoice == 0) {
+                                                    //insideMessageHistory = false;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    saveMessages(user);
+                                }
+                            }
                             break;
                         case 2:
                             // Statistics
@@ -237,7 +407,6 @@ public class Menu {
             }
     }
 
-
     public static String[] parseUsers(User user) {
         ArrayList<Message> messages = user.getMessages();
         ArrayList<String> temp = new ArrayList<>();
@@ -293,6 +462,7 @@ public class Menu {
         pw.write(String.join(",", allValues) + "\n");
         pw.flush();
     } */
+
 
     public static void writeUsers(String filename, ArrayList<User> users) {
         File f = new File(filename);
