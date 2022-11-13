@@ -1,0 +1,3 @@
+"Buyer1","email@email.com","password","b","Buyer2,Seller1"
+"Buyer2","email2@email.com","password2","b",""
+"Seller1","email3@email.com","password3","s","Buyer1"
