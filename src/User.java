@@ -5,55 +5,97 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class User {
+
+    private String email;
     private final String username;
-    private ArrayList<ArrayList<String>> messages;
+    private ArrayList<Message> messages = new ArrayList<>();
 
-    private ArrayList<User> blockedUsers;
+    private String password;
 
-    public User(String username) {
+    private ArrayList<User> blockedUsers = new ArrayList<>();
+
+    private ArrayList<String> blockedUsernames = new ArrayList<>();
+
+    public User(String username, String email, String password) {
         this.username = username;
+        this.email = email;
+        this.password = password;
         try {
-            messages = parseMessages(username);
+            messages = parseMessages();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void refreshMessages() throws IOException {
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i).getSender().equals(username) && messages.get(i).isDelBySender()) {
+                messages.remove(i);
+                i--;
+            }
+            else if (messages.get(i).getReceiver().equals(username) && messages.get(i).isDelByReceiver()) {
+                messages.remove(i);
+                i--;
+            }
+        }
+    }
+
+    public User(String username, String email, String password, ArrayList<String> blockedUsernames) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.blockedUsernames = blockedUsernames;
+        try {
+            messages = parseMessages();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public String getUsername() {
         return username;
     }
 
-    public ArrayList<ArrayList<String>> getMessages() {
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public ArrayList<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(ArrayList<ArrayList<String>> messages) {
+    public void setMessages(ArrayList<Message> messages) {
         this.messages = messages;
     }
 
-    private ArrayList<ArrayList<String>> parseMessages(String username) throws IOException {
-        ArrayList<ArrayList<String>> wholeFile = readWholeFile();
+    private ArrayList<Message> parseMessages() throws IOException {
+        ArrayList<Message> wholeFile = readWholeFile();
 
-        ArrayList<ArrayList<String>> temp = new ArrayList<>();
-        for (ArrayList<String> line : wholeFile) {
-            if (line.get(1).equals("\"" + username + "\"") || line.get(2).equals("\"" + username + "\"")) {
+        ArrayList<Message> temp = new ArrayList<>();
+        for (Message line : wholeFile) {
+            if ((line.getSender().equals(username) && !line.isDelBySender()) || (line.getReceiver().equals(username) && !line.isDelBySender())) {
                 temp.add(line);
             }
         }
         return temp;
     }
 
-    private ArrayList<ArrayList<String>> readWholeFile() throws IOException {
-        ArrayList<ArrayList<String>> fileContent = new ArrayList<>();
+    private ArrayList<Message> readWholeFile() throws IOException {
+        ArrayList<Message> fileContent = new ArrayList<>();
         BufferedReader bfr = new BufferedReader(new FileReader(new File("messages.csv")));
         String st;
         while ((st = bfr.readLine()) != null) {
-            fileContent.add(customSplitSpecific(st));
+            ArrayList<String> temp = customSplitSpecific(st);
+            for (int i = 0; i < temp.size(); i++) {
+                temp.set(i, temp.get(i).substring(1, temp.get(i).length()-1));
+            }
+            fileContent.add(new Message(Integer.parseInt(temp.get(0)),temp.get(1),temp.get(2),temp.get(3),temp.get(4),Boolean.parseBoolean(temp.get(5)),Boolean.parseBoolean(temp.get(6))));
         }
         return fileContent;
     }
 
-    private ArrayList<String> customSplitSpecific(String s)
+    public ArrayList<String> customSplitSpecific(String s)
     {
         ArrayList<String> words = new ArrayList<>();
         boolean notInsideComma = true;
@@ -79,4 +121,32 @@ public class User {
             }
         }
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void removeUser() {
+        email = null;
+        password = null;
+        blockedUsers = null;
+        messages = null;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public ArrayList<String> getBlockedUsernames() {
+        return blockedUsernames;
+    }
+
+    public ArrayList<User> getBlockedUsers() {
+        return blockedUsers;
+    }
+
 }
