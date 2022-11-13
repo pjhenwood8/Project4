@@ -14,6 +14,7 @@ public class Menu {
         User user = null;
         User currUser = null;
         ArrayList<User> users = readUsers("login.csv");
+        addBlockedUsers(users);
         System.out.println("Please enter the number corresponding with your option");
         while(LoggingIn) {
             System.out.println("1. Login\n2. Create Account\n3. Exit");
@@ -26,8 +27,11 @@ public class Menu {
                     break;
                 case "2":
                     user = createAccount(scanner);
-                    if(user != null)
+                    if(user != null) {
                         LoggingIn = false;
+                        currUser = user;
+                        users.add(user);
+                    }
                     break;
                 case "3":
                     user = null;
@@ -40,18 +44,24 @@ public class Menu {
         }
         System.out.println("Finished");
         if(user != null) {
-            currUser = user;
-            users.add(currUser);
+            for (User u : users) {
+                if (u.getUsername().equalsIgnoreCase(user.getUsername())) {
+                    currUser = u;
+                }
+            }
         }
 
         boolean online = true;
-        if (currUser != null) {
+        while (online) {
+            if (currUser != null) {
                 try {
                     System.out.println("[1] Messages\n[2] Statistics\n[3] Account\n[0] Exit");
                     int choice = scanner.nextInt();
                     scanner.nextLine();
                     switch (choice) {
                         case 1:
+                            System.out.printf("%s - Message Log%n", currUser.getUsername());
+                            System.out.println("--------------");
                             if (currUser instanceof Seller) {
                                 while (true) {
                                     ArrayList<Message> messageHistory;
@@ -325,7 +335,14 @@ public class Menu {
                             break;
                         case 3:
                             do {
-                                System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Create New Store\n[4] Delete Store\n[0] Exit");
+                                System.out.printf("%s - Account Details%n", currUser.getUsername());
+                                System.out.println("--------------");
+                                System.out.printf("Email: %s%nPassword: %s%n", currUser.getEmail(), currUser.getPassword());
+                                if (currUser instanceof Seller) {
+                                    System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Create New Store\n[4] Delete Store\n[0] Exit");
+                                } else {
+                                    System.out.println("[1] Edit Account\n[2] Delete Account\n[0] Exit");
+                                }
                                 choice = scanner.nextInt();
                                 if (choice > 4) {
                                     throw new InputMismatchException();
@@ -342,9 +359,16 @@ public class Menu {
                                         switch (choice) {
                                             case 1 -> {
                                                 scanner.nextLine();
-                                                System.out.println("Enter new email:");
-                                                newAccountInfo = scanner.nextLine();
-                                                currUser.setEmail(newAccountInfo);
+                                                do {
+                                                    System.out.println("Enter new email:");
+                                                    newAccountInfo = scanner.nextLine();
+                                                    if (newAccountInfo.contains("@") && newAccountInfo.contains(".")) {
+                                                        currUser.setEmail(newAccountInfo);
+                                                    } else {
+                                                        System.out.println("Error: Enter a valid email!");
+                                                        newAccountInfo = "";
+                                                    }
+                                                } while (newAccountInfo.isEmpty());
                                                 System.out.printf("Email changed to: %s%n", newAccountInfo);
                                             }
                                             case 2 -> {
@@ -405,6 +429,18 @@ public class Menu {
                     scanner.nextLine();
                 }
             }
+        }
+        writeUsers("login.csv", users);
+        System.out.println("Successfully Logged out");
+
+        //store.csv test
+        /*ArrayList<User> users = readUsers("login.csv");
+        ArrayList<Store> stores = readStores("stores.csv", users);
+        ArrayList<Buyer> buyers = new ArrayList<>();
+        Buyer exBuyer = new Buyer("exBuyer", "ebuyer@purdue.edu", "9876");
+        buyers.add(exBuyer);
+        stores.add(new Store("Nike", 34, buyers));
+        writeStores("stores.csv", stores);*/
     }
 
     public static String[] parseUsers(User user) {
@@ -438,32 +474,6 @@ public class Menu {
         return temp;
     }
 
-    /*
-    public static void writeMessage(User sender, User receiver, String message) throws SameTypeException, IOException {
-        if (sender instanceof Buyer && receiver instanceof Buyer) {
-            throw new SameTypeException("Buyers can't write to buyers");
-        }
-        if (sender instanceof Seller && receiver instanceof Seller) {
-            throw new SameTypeException("Sellers can't to sellers");
-        }
-        PrintWriter pw = new PrintWriter(new FileWriter(new File("messages.csv")), true);
-
-        String[] allValues = new String[4];
-
-        LocalDateTime myDateObj = LocalDateTime.now();
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String formattedDate = myDateObj.format(myFormatObj);
-
-        allValues[0] = "\"" + formattedDate + "\"";
-        allValues[1] = "\"" + sender.getUsername() + "\"";
-        allValues[2] = "\"" + receiver.getUsername() + "\"";
-        allValues[3] = "\"" + message + "\"";
-
-        pw.write(String.join(",", allValues) + "\n");
-        pw.flush();
-    } */
-
-
     public static void writeUsers(String filename, ArrayList<User> users) {
         File f = new File(filename);
         try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, false))) {
@@ -488,7 +498,11 @@ public class Menu {
                         }
                     }
                 } else {
-                    pw.print("\"");
+                    if (u instanceof Seller) {
+                        pw.print("\",");
+                    } else {
+                        pw.print("\"");
+                    }
                 }
                 if (u instanceof Seller) {
                     if (((Seller) u).getStores().size() > 0) {
@@ -500,7 +514,7 @@ public class Menu {
                             }
                         }
                     } else {
-                        pw.print(",\"\"");
+                        pw.print("\"\"");
                     }
                 }
                 pw.println();
@@ -661,7 +675,7 @@ public static User login(Scanner scanner) {
         }
         System.out.println("A valid username contains no commas");
         while(invUsername){
-            System.out.print("Please enter a valid username:");
+            System.out.print("Please enter a valid username (This cannot be changed later):");
             userName = scanner.nextLine();
             if (userName.contains(",") || userName == null || userName == "") {
                 System.out.println("That user name was not valid");
@@ -769,7 +783,9 @@ public static User login(Scanner scanner) {
                 } else {
                     Seller seller = new Seller(username, email, password, blockedUsernames);
                     String strStores = user.get(5);
-                    if (strStores != null) {
+                    if (strStores == null || strStores.isEmpty()) {
+
+                    } else {
                         do {
                             if (!strStores.contains(",")) {
                                 seller.createStore(strStores);
@@ -785,6 +801,93 @@ public static User login(Scanner scanner) {
             }
         }
         return users;
+    }
+
+    public static ArrayList<Store> readStores(String filename, ArrayList<User> users) throws FileNotFoundException {
+        File f = new File(filename);
+        ArrayList<String> lines = new ArrayList<>();
+        BufferedReader bfr = null;
+        ArrayList<Store> stores = new ArrayList<>();
+        if (!f.exists()) {
+            throw new FileNotFoundException("File doesn't exist");
+        } else {
+            try {
+                bfr = new BufferedReader(new FileReader(f));
+                String read = bfr.readLine();
+                while (read != null) {
+                    lines.add(read);
+                    read = bfr.readLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (bfr != null) {
+                        bfr.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        for (String line : lines) {
+            if (!line.isEmpty()) {
+                ArrayList<String> strStores = customSplitSpecific(line);
+                String storeName = strStores.get(0);
+                int messagesReceived = Integer.parseInt(strStores.get(1));
+                String messagedUsers = strStores.get(2);
+                ArrayList<String> messageUsers = new ArrayList<>();
+                ArrayList<Buyer> buyers = new ArrayList<>();
+                do {
+
+                    if (!messagedUsers.contains(",")) {
+                        messageUsers.add(messagedUsers);
+                        messagedUsers = "";
+                    } else {
+                        messageUsers.add(messagedUsers.substring(0, messagedUsers.indexOf(",")));
+                        messagedUsers = messagedUsers.substring(messagedUsers.indexOf(",") + 1);
+                    }
+                } while (!messagedUsers.isEmpty());
+                for (String s : messageUsers) {
+                    for (User u : users) {
+                        if (u instanceof Buyer && u.getUsername().equals(s)) {
+                            buyers.add((Buyer) u);
+                        }
+                    }
+                }
+                stores.add(new Store(storeName, messagesReceived, buyers));
+            }
+        }
+        return stores;
+    }
+
+    public static void writeStores(String filename, ArrayList<Store> stores) {
+        File f = new File(filename);
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, false))) {
+            for (Store s : stores) {
+                pw.print("\"" + s.getStoreName() + "\",\"" + s.getMessagesReceived() + "\",\"");
+                if (s.getUserMessaged().size() > 0) {
+                    //ArrayList<User> blockedUsers = u.getBlockedUsers();
+                    ArrayList<String> userMessaged = new ArrayList<>();
+                    for (Buyer b : s.getUserMessaged()) {
+                        userMessaged.add(b.getUsername());
+                    }
+                    for (int i = 0; i < userMessaged.size(); i++) {
+                        if (i != userMessaged.size() - 1) {
+                            pw.print(userMessaged.get(i) + ",");
+                        } else {
+                            pw.print(userMessaged.get(i) + "\"");
+                        }
+                    }
+                } else {
+                    pw.print("\"");
+                }
+                pw.println();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
 

@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 public class Seller extends User {
 
+    private ArrayList<Store> newStores = new ArrayList<>();
     private ArrayList<String> stores = new ArrayList<>();
 
     public Seller(String username, String email, String password) {
@@ -19,11 +20,17 @@ public class Seller extends User {
     }
     public void createStore(String storeName) {
         stores.add(storeName);
+        newStores.add(new Store(storeName));
     }
 
     public void deleteStore(String storeName) {
         if (stores.contains(storeName)) {
             stores.remove(storeName);
+            for (Store s : newStores) {
+                if (s.getStoreName().equalsIgnoreCase(storeName)) {
+                    newStores.remove(s);
+                }
+            }
         } else {
             throw new IllegalArgumentException(String.format("%s is not this user store", storeName));
         }
@@ -31,6 +38,10 @@ public class Seller extends User {
 
     public ArrayList<String> getStores() {
         return stores;
+    }
+
+    public ArrayList<Store> getNewStores() {
+        return newStores;
     }
 
     public void viewStatistics(boolean alphabetical) throws IOException {
