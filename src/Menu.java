@@ -115,7 +115,20 @@ public class Menu {
                                             System.out.println();
                                             System.out.println("[1] Write message                         [2] Edit message");
                                             System.out.println("[3] Delete message                        [0] Exit");
+                                            System.out.println("[-1] Export this message history to csv file");
                                             int optionChoice = Integer.parseInt(scanner.nextLine());
+                                            if (optionChoice == -1) {
+                                                System.out.println("Enter name of the file to which you want to export your message history");
+                                                String fileName = scanner.nextLine();
+                                                PrintWriter pw = new PrintWriter(new FileOutputStream(new File(fileName),false));
+                                                for (int i = 0; i < messageHistory.size(); i++) {
+                                                    Message msg = messageHistory.get(i);
+                                                    String ans = String.format("\"%d\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", msg.getId(), msg.getTime(), msg.getSender(), msg.getReceiver(), msg.getMessage(), msg.isDelBySender(), msg.isDelByReceiver());
+                                                    pw.write(ans);
+                                                    pw.println();
+                                                    pw.flush();
+                                                }
+                                            }
                                             if (optionChoice == 1) {
                                                 System.out.println("You want to send a message or upload a txt file?\n[1] Send message\n[2] Upload file");
                                                 int fileOrText = Integer.parseInt(scanner.nextLine());
@@ -285,7 +298,20 @@ public class Menu {
                                                 System.out.println();
                                                 System.out.println("[1] Write message                         [2] Edit message");
                                                 System.out.println("[3] Delete message                        [0] Exit");
+                                                System.out.println("[-1] Export this message history to csv file");
                                                 int optionChoice = Integer.parseInt(scanner.nextLine());
+                                                if (optionChoice == -1) {
+                                                    System.out.println("Enter name of the file to which you want to export your message history");
+                                                    String fileName = scanner.nextLine();
+                                                    PrintWriter pw = new PrintWriter(new FileOutputStream(new File(fileName),false));
+                                                    for (int i = 0; i < messageHistory.size(); i++) {
+                                                        Message msg = messageHistory.get(i);
+                                                        String ans = String.format("\"%d\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", msg.getId(), msg.getTime(), msg.getSender(), msg.getReceiver(), msg.getMessage(), msg.isDelBySender(), msg.isDelByReceiver());
+                                                        pw.write(ans);
+                                                        pw.println();
+                                                        pw.flush();
+                                                    }
+                                                }
                                                 if (optionChoice == 1) {
                                                     System.out.println("You want to send a message or upload a txt file?\n[1] Send message\n[2] Upload file");
                                                     int fileOrText = Integer.parseInt(scanner.nextLine());
