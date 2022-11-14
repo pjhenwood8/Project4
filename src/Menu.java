@@ -474,7 +474,16 @@ public class Menu {
                                 }
                                 break;
                             case 2:
-                                // Statistics
+                                while (true) {
+                                    System.out.println("Select in which order you want to sort\n[1] Alphabetical\n[2] Reverse alphabetical");
+                                    int alphabetical = Integer.parseInt(scanner.nextLine());
+                                    if (alphabetical == 1)
+                                        currUser.viewStatistics(true);
+                                    else if (alphabetical == 2)
+                                        currUser.viewStatistics(false);
+                                    else if (alphabetical == 0)
+                                        break;
+                                }
                                 break;
                             case 3:
                                 do {
