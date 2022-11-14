@@ -1,16 +1,14 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
- * User class
+ * Project 4 - User
  * This class is the underlying structure of each user. It contains the information each
  * user stores such as the user's email, password, email, messages, and blocked users.
  *
- * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood, lab sec LC2
  *
  * @version November 15, 2022
  *
@@ -111,7 +109,7 @@ public class User {
     {
         ArrayList<String> words = new ArrayList<>();
         boolean notInsideComma = true;
-        int start =0, end=0;
+        int start =0;
         for(int i=0; i<s.length()-1; i++)
         {
             if(s.charAt(i)==',' && notInsideComma)

@@ -1,16 +1,16 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
 /**
- * Seller class
+ * Project 4 - Seller
  * This class extends the user class giving it the permissions that come with being a seller.
+ * Includes a private ArrayList field of sellers.
  *
- * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood, lab sec LC2
  *
  * @version November 15, 2022
  *
@@ -46,22 +46,22 @@ public class Seller extends User {
         BufferedReader br = new BufferedReader(fr);
         ArrayList<String> messages = new ArrayList<>();
         ArrayList<String> senders = new ArrayList<>();
-        ArrayList<Integer> messageCount = new ArrayList<Integer>();
-        ArrayList<String> words = new ArrayList<String>();
-        ArrayList<String> uniqueWords = new ArrayList<String>();
-        ArrayList<Integer> wordUsage = new ArrayList<Integer>();
+        ArrayList<Integer> messageCount = new ArrayList<>();
+        ArrayList<String> words = new ArrayList<>();
+        ArrayList<String> uniqueWords = new ArrayList<>();
+        ArrayList<Integer> wordUsage = new ArrayList<>();
         int secondCommaIndex = -1;
-        int thirdCommaIndex = -1;
-        String sender = "";
-        String reciever = "";
-        String line = "";
+        int thirdCommaIndex;
+        String sender;
+        String receiver;
+        String line;
         //creates ArrayLists messages and senders
         line = br.readLine();
         while (line != null) {
             secondCommaIndex = line.indexOf(',', line.indexOf(','));
             thirdCommaIndex = line.indexOf(',', secondCommaIndex + 1);
-            reciever = line.substring(secondCommaIndex, thirdCommaIndex);
-            if(reciever.equals(getUsername())) {
+            receiver = line.substring(secondCommaIndex, thirdCommaIndex);
+            if(receiver.equals(getUsername())) {
                 messages.add(line);
             }
             sender = line.substring(line.indexOf(','), secondCommaIndex);
@@ -142,12 +142,12 @@ public class Seller extends User {
             hashMap.put(senders.get(i), messageCount.get(i));
         }
         Collections.sort(senders);
-        if (alphabetical == true) {
+        if (alphabetical) {
             //alphabetical
             for (int i = 0; i < senders.size(); i++) {
                 System.out.println("Customers: " + senders.get(i) + " - Messages sent: " + hashMap.get(senders.get(i)));
             }
-        } else if (alphabetical == false) {
+        } else if (!alphabetical) {
             //reverse alphabetical
             for (int i = senders.size() - 1; i >= 0; i--) {
                 System.out.println("Customers: " + senders.get(i) + " - Messages sent: " + hashMap.get(senders.get(i)));

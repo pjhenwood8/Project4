@@ -1,5 +1,15 @@
 import java.util.ArrayList;
 
+/**
+ * Project 4 - Store class
+ * This class creates a store object with three constructors, private fields storeName, messagesReceived,
+ * and a list of Buyers that messaged this store.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood, lab sec LC2
+ *
+ * @version November 15, 2022
+ *
+ */
 public class Store {
 
     private String storeName;

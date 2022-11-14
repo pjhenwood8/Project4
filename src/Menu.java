@@ -2,12 +2,12 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Project 4
- * This program prompts the user to login or create an account.
+ * Project 4 - Menu
+ * This program prompts the user to log in or create an account.
  * After logging in the user can then edit their account, message
- * other users, or view stats about themself.
+ * other users, or view stats about themselves.
  *
- * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood, lab sec LC2
  *
  * @version November 15, 2022
  *

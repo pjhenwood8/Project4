@@ -1,6 +1,16 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Project 4 - Message
+ * This class creates a message class that contains an id for a message, number of total messages, time, sender,
+ * receiver, message string, and booleans if deleted. Contains constructors, getters and setters, and toString method.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood, lab sec LC2
+ *
+ * @version November 15, 2022
+ *
+ */
 public class Message {
     private final int id;
     private static int count = 0;
