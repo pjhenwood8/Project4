@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("ReassignedVariable")
 public class Menu {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
@@ -46,6 +47,7 @@ public class Menu {
             }
             if (user != null) {
                 System.out.println("Successfully logged in as " + user.getUsername());
+                System.out.println();
                 for (User u : users) {
                     if (u.getUsername().equalsIgnoreCase(user.getUsername())) {
                         currUser = u;
@@ -57,6 +59,7 @@ public class Menu {
             while (loggedIn) {
                 if (currUser != null) {
                     try {
+                        System.out.println("--Main Menu--");
                         System.out.println("[1] Messages\n[2] Statistics\n[3] Account\n[0] Exit");
                         int choice = scanner.nextInt();
                         scanner.nextLine();
@@ -230,7 +233,7 @@ public class Menu {
                                     System.out.println("[1] Write to store\n[2] Write to seller\n[0] Exit");
                                     int makeChoice = Integer.parseInt(scanner.nextLine());
                                     if (makeChoice == 0) {
-
+                                        break;
                                     } else if (makeChoice == 1) {
                                         System.out.println("List of Stores:");
                                         for (User value : users) {
@@ -1153,9 +1156,7 @@ public static User login(Scanner scanner) {
                 } else {
                     Seller seller = new Seller(username, email, password, blockedUsernames);
                     String strStores = user.get(5);
-                    if (strStores == null || strStores.isEmpty()) {
-
-                    } else {
+                    if (strStores != null && !strStores.isEmpty()) {
                         do {
                             if (!strStores.contains(",")) {
                                 seller.createStore(strStores);
