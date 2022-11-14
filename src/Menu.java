@@ -888,6 +888,11 @@ public class Menu {
         }
     }
 
+
+    /*
+    This method is responsible for parse through all Users, and selecting only those with whom our User had conversations with
+    If user doesn't have conversation initiated with certain users, it won't add their username to the returning array
+    */
     public static String[] parseUsers(User user) {
         ArrayList<Message> messages = user.getMessages();
         ArrayList<String> temp = new ArrayList<>();
@@ -907,6 +912,8 @@ public class Menu {
         return answer;
     }
 
+    //this method parses mainClient messages field, and selects only messages that has thirdParty's username in it.
+    //this method allows us to view private message history with specific User, whose username is passed in as "thirdParty"
     public static ArrayList<Message> parseMessageHistory(User mainClient, String thirdParty) {
         ArrayList<Message> messages = mainClient.getMessages();
         ArrayList<Message> temp = new ArrayList<>();
@@ -917,6 +924,7 @@ public class Menu {
         }
         return temp;
     }
+
 
     public static void writeUsers(String filename, ArrayList<User> users) {
         File f = new File(filename);
@@ -974,6 +982,15 @@ public class Menu {
         }
     }
 
+    /* this is very useful method that is used to read singular lines in the files
+    it's functionality is fairly basic:
+    For example we receive an line ---          "abc","34234","I like apples, bananas, watermelon"
+    As an output it will give us an ArrayList abc(for example) where
+    abc.get(0)     ->   abc
+    abc.get(1)     ->   34234
+    abc.get(2)     ->   I like apples, bananas, watermelon
+    We couldn't use regular split() function, so we created this one to help us solve the problem
+    */
     private static ArrayList<String> customSplitSpecific(String s)
     {
         ArrayList<String> words = new ArrayList<>();
@@ -993,6 +1010,9 @@ public class Menu {
         return words;
     }
 
+    /*
+    This method is used to conveniently call blockUser method from the User.java
+    * */
     public static void addBlockedUsers(ArrayList<User> users) {
         for (User u : users) {
             ArrayList<String> blockedUsernames = u.getBlockedUsernames();
@@ -1002,7 +1022,7 @@ public class Menu {
         }
     }
 
-
+    // This method is used to save changed made to the user to the "messages.csv" file
     public static void saveMessages(User user) throws IOException {
         ArrayList<Message> allMessages = user.getMessages();
         ArrayList<String> temp = new ArrayList<>();
@@ -1015,12 +1035,13 @@ public class Menu {
         }
 
         PrintWriter pw = new PrintWriter(new FileOutputStream("messages.csv",false));
-        for (String s : temp) {
+        for (String s : temp) {                // here we write all messages that are not related to our user first
             pw.write(s);
             pw.println();
             pw.flush();
         }
-        for (Message msg : allMessages) {
+        // only after we write those that might have been changed
+        for (Message msg : allMessages) {            // here you can the format in which we write those messages to the messages.csv file
             String ans = String.format("\"%d\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", msg.getId(), msg.getTime(), msg.getSender(), msg.getReceiver(), msg.getMessage(), msg.isDelBySender(), msg.isDelByReceiver());
             pw.write(ans);
             pw.println();
@@ -1211,7 +1232,8 @@ public static User login(Scanner scanner) {
         //A new user is returned using the information inputed
         return user;
     }
-    
+
+    //
     public static ArrayList<User> readUsers(String filename) throws FileNotFoundException {
         File f = new File(filename);
         ArrayList<String> lines = new ArrayList<>();
