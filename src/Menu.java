@@ -48,7 +48,7 @@ public class Menu {
                 }
             }
             if (user != null) {
-                System.out.println("Successfully Logged In!");
+                System.out.println("Successfully logged in as " + user.getUsername());
                 for (User u : users) {
                     if (u.getUsername().equalsIgnoreCase(user.getUsername())) {
                         currUser = u;
@@ -482,7 +482,7 @@ public class Menu {
                                     System.out.println("--------------");
                                     System.out.printf("Email: %s%nPassword: %s%n", currUser.getEmail(), currUser.getPassword());
                                     if (currUser instanceof Seller) {
-                                        System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Create New Store\n[4] Delete Store\n[0] Exit");
+                                        System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Block/Unblock User\n[4] Create New Store\n[0] Exit");
                                     } else {
                                         System.out.println("[1] Edit Account\n[2] Delete Account\n[0] Exit");
                                     }
@@ -536,25 +536,52 @@ public class Menu {
                                             }
                                             break;
                                         case 3:
-                                            if (currUser instanceof Buyer) {
-                                                break;
-                                            } else if (currUser instanceof Seller) {
-                                                System.out.println("Enter name for new store");
-                                                String storeName = scanner.nextLine();
-                                                ((Seller) currUser).createStore(storeName);
-                                                break;
+                                            System.out.println("Blocked Users");
+                                            for (User b : currUser.getBlockedUsers()) {
+                                                System.out.println(b.getUsername());
                                             }
+                                            System.out.println("--------------");
+                                            System.out.println("[1] Block new User\n[2] Unblock Users");
+                                            choice = scanner.nextInt();
+                                            scanner.nextLine();
+                                            switch (choice) {
+                                                case 1:
+                                                    System.out.println("Enter name of user to block:");
+                                                    String blockUsername = scanner.nextLine();
+                                                    if (currUser.blockUser(blockUsername, users)) {
+                                                        System.out.println(blockUsername + " blocked");
+                                                    } else {
+                                                        System.out.println("That user doesn't exist");
+                                                    }
+                                                    break;
+                                                case 2:
+                                                    System.out.println("Enter name of user to unblock:");
+                                                    String unblockUsername = scanner.nextLine();
+                                                    if (currUser.unblockUser(unblockUsername, users)) {
+                                                        System.out.println(unblockUsername + " unblocked");
+                                                    } else {
+                                                        System.out.println("That user doesn't exist in your blocked list");
+                                                    }
+                                                    break;
+                                            }
+                                            writeUsers("login.csv", users);
+                                            break;
                                         case 4:
                                             if (currUser instanceof Buyer) {
                                                 break;
                                             } else if (currUser instanceof Seller) {
-                                                System.out.println("Enter store name to delete");
-                                                String storeName = scanner.nextLine();
-                                                try {
-                                                    ((Seller) currUser).deleteStore(storeName);
-                                                } catch (IllegalArgumentException il) {
-                                                    System.out.println(il.getMessage());
+                                                System.out.println("Your Stores:");
+                                                for (String storeName : ((Seller) currUser).getStores()) {
+                                                    System.out.println(storeName);
                                                 }
+                                                System.out.println("--------------");
+                                                scanner.nextLine();
+                                                System.out.println("Enter name for new store");
+                                                String storeName = scanner.nextLine();
+                                                ((Seller) currUser).createStore(storeName);
+                                                stores.add(new Store(storeName,0));
+                                                writeStores("stores.csv", stores);
+                                                writeUsers("login.csv", users);
                                                 break;
                                             }
                                         default:
@@ -647,7 +674,11 @@ public class Menu {
                     }
                 } else {
                     if (u instanceof Seller) {
-                        pw.print("\",");
+                        if (((Seller) u).getStores().size() > 0) {
+                            pw.print("\"");
+                        } else {
+                            pw.print("\",");
+                        }
                     } else {
                         pw.print("\"");
                     }

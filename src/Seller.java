@@ -23,19 +23,6 @@ public class Seller extends User {
         newStores.add(new Store(storeName));
     }
 
-    public void deleteStore(String storeName) {
-        if (stores.contains(storeName)) {
-            stores.remove(storeName);
-            for (Store s : newStores) {
-                if (s.getStoreName().equalsIgnoreCase(storeName)) {
-                    newStores.remove(s);
-                }
-            }
-        } else {
-            throw new IllegalArgumentException(String.format("%s is not this user store", storeName));
-        }
-    }
-
     public ArrayList<String> getStores() {
         return stores;
     }

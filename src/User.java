@@ -113,12 +113,24 @@ public class User {
         return words;
     }
 
-    public void blockUser(String username, ArrayList<User> users) {
+    public boolean blockUser(String username, ArrayList<User> users) {
         for (User u : users) {
             if (u.getUsername().equalsIgnoreCase(username)) {
                 blockedUsers.add(u);
+                return true;
             }
         }
+        return false;
+    }
+
+    public boolean unblockUser(String username, ArrayList<User> users) {
+        for (User u : users) {
+            if (u.getUsername().equalsIgnoreCase(username)) {
+                blockedUsers.remove(u);
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getPassword() {
