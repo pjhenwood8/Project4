@@ -478,7 +478,9 @@ public class Menu {
                                 break;
                             case 2:
                                 while (true) {
-                                    System.out.println("Select in which order you want to sort\n[1] Alphabetical\n[2] Reverse alphabetical");
+                                    System.out.printf("%s - Statistics%n", currUser.getUsername());
+                                    System.out.println("--------------");
+                                    System.out.println("Select in which order you want to sort\n[1] Alphabetical\n[2] Reverse alphabetical\n[3] Most common words\n[0] Exit");
                                     int alphabetical = Integer.parseInt(scanner.nextLine());
                                     if (currUser instanceof Buyer) {
                                         if (alphabetical == 1)
@@ -488,12 +490,69 @@ public class Menu {
                                         else if (alphabetical == 0)
                                             break;
                                     } else if (currUser instanceof Seller) {
-                                        if (alphabetical == 1)
-                                            ((Seller) currUser).viewStatistics(true);
-                                        else if (alphabetical == 2)
-                                            ((Seller) currUser).viewStatistics(false);
-                                        else if (alphabetical == 0)
+                                        Map<String, Integer> sentMessages = new HashMap<>();
+                                        int i = 0;
+                                        for (User u : users) {
+                                            int count = 0;
+                                            ArrayList<Message> messages = new ArrayList<>();
+                                            if (!u.equals(currUser) && u instanceof Buyer) {
+                                                 messages = parseStoreMessages(currUser, u.getUsername());
+                                                count = messages.size();
+                                                sentMessages.put(u.getUsername(), count);
+                                            }
+                                        }
+                                        ArrayList<String> sortedSentMessages = new ArrayList<String>(sentMessages.keySet());
+                                        Collections.sort(sortedSentMessages);
+                                        if (alphabetical == 1) {
+                                            for (String s : sortedSentMessages) {
+                                                System.out.printf("%s sent %d messages%n", s, sentMessages.get(s));
+                                            }
+                                        } else if (alphabetical == 2) {
+                                            for (int j = sortedSentMessages.size() - 1; j >= 0; j--) {
+                                                System.out.printf("%s sent %d messages%n", sortedSentMessages.get(j), sentMessages.get(sortedSentMessages.get(j)));
+                                            }
+                                        } else if (alphabetical == 0) {
                                             break;
+                                        } else if (alphabetical == 3) {
+                                            ArrayList<Message> allMessages = new ArrayList<>();
+                                            String word = "";
+                                            String secondWord = "";
+                                            String thirdWord = "";
+                                            int count = 0;
+                                            int maxCount = 0;
+                                            int secondCount = 0;
+                                            int thirdCount = 0;
+                                            for (User u1 : users) {
+                                                if (u1 != currUser) {
+                                                    allMessages.addAll(parseMessageHistory(currUser, u1.getUsername()));
+                                                }
+                                            }
+                                            String message = "";
+                                            for (Message m : allMessages) {
+                                                message += m.getMessage() + " ";
+                                            }
+                                            String[] wordArr = message.split(" ");
+                                            for (int k = 0; k < wordArr.length; k++) {
+                                                count = 1;
+                                                for (int l = k + 1; l < wordArr.length; l++) {
+                                                    if (wordArr[k].equals(wordArr[l])) {
+                                                        count++;
+                                                    }
+
+                                                }
+                                                if (count >= maxCount) {
+                                                    thirdCount = secondCount;
+                                                    secondCount = maxCount;
+                                                    maxCount = count;
+                                                    thirdWord = secondWord;
+                                                    secondWord = word;
+                                                    word = wordArr[k];
+                                                }
+                                            }
+                                            System.out.println("The most common word in Messages is " + word + " said " + maxCount + " times");
+                                            System.out.println("The second common word in Messages is " + secondWord + " said " + secondCount + " times");
+                                            System.out.println("The third most common word in Messages is " + thirdWord + " said " + thirdCount + " times");
+                                        }
                                     }
 
                                 }
@@ -1100,6 +1159,17 @@ public static User login(Scanner scanner) {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ArrayList<Message> parseStoreMessages(User mainClient, String thirdParty) {
+        ArrayList<Message> messages = mainClient.getMessages();
+        ArrayList<Message> temp = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i).getSender().equals(thirdParty)) {
+                temp.add(messages.get(i));
+            }
+        }
+        return temp;
     }
 }
 

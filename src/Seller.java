@@ -46,19 +46,20 @@ public class Seller extends User {
         String reciever = "";
         String line = "";
         //creates ArrayLists messages and senders
-        do {
-             line = br.readLine();
-             secondCommaIndex = line.indexOf(',', line.indexOf(','));
-             thirdCommaIndex = line.indexOf(',', secondCommaIndex + 1);
-             reciever = line.substring(secondCommaIndex, thirdCommaIndex);
-             if(reciever.equals(getUsername())) {
+        line = br.readLine();
+        while (line != null) {
+            secondCommaIndex = line.indexOf(',', line.indexOf(','));
+            thirdCommaIndex = line.indexOf(',', secondCommaIndex + 1);
+            reciever = line.substring(secondCommaIndex, thirdCommaIndex);
+            if(reciever.equals(getUsername())) {
                 messages.add(line);
-             }
-             sender = line.substring(line.indexOf(','), secondCommaIndex);
-             if(senders.contains(sender) == false) {
-                 senders.add(sender);
-             }
-         } while(line != null);
+            }
+            sender = line.substring(line.indexOf(','), secondCommaIndex);
+            if(senders.contains(sender) == false) {
+                senders.add(sender);
+            }
+            line = br.readLine();
+        }
         //creates ArrayList messageCount
         for (int i = 0; i < senders.size(); i++) {
             int messageCounter = 0;

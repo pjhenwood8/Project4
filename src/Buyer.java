@@ -32,23 +32,22 @@ public class Buyer extends User{
         //creates ArrayLists messages and stores
         String line = "";
         String store = "";
-        do {
-            line = br.readLine();
-            store = line.substring(0, line.indexOf(','));
-            messages.add(line);
+        line = br.readLine();
+        while (line != null) {
+            store = line.substring(1, line.indexOf(',') - 1);
+            messages.add(line.substring(1, line.length() - 1));
             if (!stores.contains(store)) {
                 stores.add(store);
             }
-        } while (line != null);
+            line = br.readLine();
+        }
         //creates ArrayList totalMessagesReceived
         for (int i = 0; i < messages.size(); i++) {
             line = messages.get(i);
-            store = line.substring(0, line.indexOf(","));
-            int counter = 0;
-            if (stores.get(i).equals(store)) {
-                counter++;
-            }
-            totalMessagesReceived.add(counter);
+            store = line.substring(0, line.indexOf(",") - 1);
+            line = line.substring(line.indexOf(",") + 1);
+            int messagesReceived = Integer.parseInt(line.substring(1, line.indexOf(",") - 1)) ;
+            totalMessagesReceived.add(messagesReceived);
         }
         //creates ArrayList messagesFromUser
         for (int i = 0; i < stores.size(); i++) {
@@ -70,7 +69,7 @@ public class Buyer extends User{
         }
         HashMap<String, Integer> listTwo = new HashMap<>();
         for (int i = 0; i < stores.size(); i++) {
-            listOne.put(stores.get(i), messagesFromUser.get(i));
+            listTwo.put(stores.get(i), messagesFromUser.get(i));
         }
         //sort alphabetically
         Collections.sort(stores);
