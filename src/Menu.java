@@ -160,13 +160,16 @@ public class Menu {
                                                         System.out.println("Enter name of txt file: ");
                                                         String fileName = scanner.nextLine();
                                                         String mes = "";
+                                                        ArrayList<String> tempArr = new ArrayList<>();
                                                         try {
                                                             BufferedReader bfr = new BufferedReader(new FileReader(fileName));
                                                             String st;
                                                             while ((st = bfr.readLine()) != null) {
-                                                                mes += st + "\n";
+                                                                tempArr.add(st);
                                                             }
-                                                        } catch (FileNotFoundException e) {
+                                                            mes = String.join("\\n",tempArr);
+                                                        }
+                                                        catch (FileNotFoundException e) {
                                                             System.out.println("I'm sorry but that file does not exist");
                                                         }
                                                         ArrayList<Message> temp = user.getMessages();
@@ -350,7 +353,7 @@ public class Menu {
                                                             System.out.print(message.toString());
                                                     }
                                                 }
-                                            } else if (receiveUser > 1) {
+                                            } else if (receiveUser >= 1) {
                                                 while (true) {
                                                     messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
                                                     for (Message message : messageHistory) {
@@ -393,12 +396,14 @@ public class Menu {
                                                             System.out.println("Enter name of txt file: ");
                                                             String fileName = scanner.nextLine();
                                                             String mes = "";
+                                                            ArrayList<String> tempArr = new ArrayList<>();
                                                             try {
                                                                 BufferedReader bfr = new BufferedReader(new FileReader(fileName));
                                                                 String st;
                                                                 while ((st = bfr.readLine()) != null) {
-                                                                    mes += st + "\\n";
+                                                                    tempArr.add(st);
                                                                 }
+                                                                mes = String.join("\\n",tempArr);
                                                             }
                                                             catch (FileNotFoundException e) {
                                                                 System.out.println("I'm sorry but that file does not exist");
