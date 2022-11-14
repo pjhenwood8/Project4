@@ -5,6 +5,17 @@ import java.util.*;
 import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * User class
+ * This class is the underlying structure of each user. It contains the information each
+ * user stores such as the user's email, password, email, messages, and blocked users.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood
+ *
+ * @version November 15, 2022
+ *
+ */
+
 public class User {
 
     private String email;
