@@ -93,13 +93,20 @@ public class Menu {
                                             break;
                                         }
                                         if (receiveUser == 0) {                                          // dialog with new user
+                                            System.out.println("List of Available Buyers to Message: ");
+                                            for (User u : users) {
+                                                if (u instanceof Buyer) {
+                                                    System.out.println(u.getUsername());
+                                                }
+                                            }
+                                            System.out.println();
                                             System.out.println("Enter name of user:");
                                             String newUser = scanner.nextLine();
                                             boolean alreadyMessaged = false;
                                             for (String u : listOfUsers) {
                                                 if (u.equals(newUser)) {
                                                     alreadyMessaged = true;
-                                                    System.out.println("You already messaged this user");
+                                                    System.out.println("You can't start a new dialog with a user you already messaged!");
                                                 }
                                             }
                                             boolean flag = true;
@@ -323,13 +330,20 @@ public class Menu {
                                                 break;
                                             }
                                             if (receiveUser == 0) {                                          // dialog with new user
+                                                System.out.println("List of Available Sellers to Message: ");
+                                                for (User u : users) {
+                                                    if (u instanceof Seller) {
+                                                        System.out.println(u.getUsername());
+                                                    }
+                                                }
+                                                System.out.println();
                                                 System.out.println("Enter name of user:");
                                                 String newUser = scanner.nextLine();
                                                 boolean alreadyMessaged = false;
                                                 for (String u : listOfUsers) {
                                                     if (u.equals(newUser)) {
                                                         alreadyMessaged = true;
-                                                        System.out.println("You already messaged this user");
+                                                        System.out.println("You can't start a new dialog with a user you already messaged!");
                                                     }
                                                 }
                                                 boolean flag = true;
