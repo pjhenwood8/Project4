@@ -729,7 +729,7 @@ public class Menu {
                                                 System.out.println(b.getUsername());
                                             }
                                             System.out.println("--------------");
-                                            System.out.println("[1] Block new User\n[2] Unblock Users");
+                                            System.out.println("[1] Block new User\n[2] Unblock Users\n[3] Exit");
                                             choice = scanner.nextInt();
                                             scanner.nextLine();
                                             switch (choice) {
@@ -750,6 +750,8 @@ public class Menu {
                                                     } else {
                                                         System.out.println("That user doesn't exist in your blocked list");
                                                     }
+                                                    break;
+                                                case 3:
                                                     break;
                                             }
                                             writeUsers("login.csv", users);
