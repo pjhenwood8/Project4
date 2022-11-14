@@ -1074,7 +1074,7 @@ public static User login(Scanner scanner) {
         }
     }
 
-    public static User createAccount(Scanner scanner) {
+    public static User createAccount(Scanner scanner, String file) {
         ArrayList<String[]> userFile = new ArrayList<>();
         User user = null;
         String email = "";
@@ -1085,12 +1085,13 @@ public static User login(Scanner scanner) {
         String[] tempArray;
         ArrayList<String> transferList;
         boolean repeatUser = false;
+        boolean repeatEmail = false;
         boolean invUsername = true;
         boolean invEmail = true;
         boolean invPass = true;
         boolean invBuyer = true;
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader("login.csv"));
+            BufferedReader bfr = new BufferedReader(new FileReader(file));
             String line = bfr.readLine();
             while (line != null) {
                 tempArrayList.add(line);
@@ -1108,12 +1109,21 @@ public static User login(Scanner scanner) {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         System.out.println("A valid email contains an @ sign and has no commas");
-        while(invEmail) {
+        while(invEmail){
             System.out.print("Please enter a valid email: ");
             email = scanner.nextLine();
+            for (String[] strings : userFile) {
+                if (email.equals(strings[1])) {
+                    repeatEmail = true;
+                }
+            }
             if (email.contains(",") || !email.contains("@")) {
-                System.out.println("That email is not valid");
+                System.out.println("That user name was not valid");
+            } else if (repeatEmail) {
+                System.out.println("Someone else has that email please enter a different one.");
+                repeatEmail = false;
             } else {
                 invEmail = false;
             }
@@ -1122,14 +1132,13 @@ public static User login(Scanner scanner) {
         while(invUsername){
             System.out.print("Please enter a valid username: ");
             userName = scanner.nextLine();
+            for (String[] strings : userFile) {
+                if (userName.equals(strings[0])) {
+                    repeatUser = true;
+                }
+            }
             if (userName.contains(",") || userName.equals("")) {
                 System.out.println("That user name was not valid");
-                for (String[] strings : userFile) {
-                    if (userName.equals(strings[0])) {
-                        System.out.println("Someone else has that username please try a different one");
-                        repeatUser = true;
-                    }
-                }
             } else if (repeatUser) {
                 System.out.println("Someone else has that user name please enter a different one.");
                 repeatUser = false;
@@ -1137,6 +1146,7 @@ public static User login(Scanner scanner) {
                 invUsername = false;
             }
         }
+
         while(invPass){
             System.out.print("Please enter a password: ");
             pass = scanner.nextLine();
@@ -1152,11 +1162,11 @@ public static User login(Scanner scanner) {
             userType = scanner.nextLine();
             if (userType.equalsIgnoreCase("Buyer")) {
                 userType = "b";
-                user = new Buyer(userName,email,pass);
+                user = new Buyer(userName, email, pass);
                 invBuyer = false;
             }else if (userType.equalsIgnoreCase("Seller")) {
                 userType = "s";
-                user = new Seller(userName,email,pass);
+                user = new Seller(userName, email, pass);
                 invBuyer = false;
             } else {
                 System.out.println("That user type was not valid");
@@ -1164,11 +1174,11 @@ public static User login(Scanner scanner) {
 
         }
         try {
-            PrintWriter pw = new PrintWriter(new FileOutputStream("login.csv", false));
-            for (String[] strings : userFile) {
-                pw.println("\"" + strings[0] + "\"" + "," + "\"" + strings[1] + "\"" + "," + "\"" + strings[2] + "\"" + "," + "\"" + strings[3] + "\"" + "," + strings[4]);
+            PrintWriter pw = new PrintWriter(new FileOutputStream(file, false));
+                for (String[] strings : userFile) {
+                    pw.println("\"" + strings[0] + "\"" + "," + "\"" + strings[1] + "\"" + "," + "\"" + strings[2] + "\"" + "," + "\"" + strings[3] + "\"" + "," + "\"" + strings[4] + "\"");
             }
-            pw.println("\"" + userName + "\"" + "," + "\"" + email + "\"" + "," + "\"" + pass + "\"" + "," + "\"" +userType + "\"" + ",\"\"");
+            pw.println("\"" + userName + "\"" + "," + "\"" + email + "\"" + "," + "\"" + pass + "\"" + "," + "\"" + userType + "\"" + ",\"\"");
             pw.close();
         } catch (IOException e ) {
             e.printStackTrace();
