@@ -1,6 +1,18 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * Project 4
+ * This program prompts the user to login or create an account.
+ * After logging in the user can then edit their account, message
+ * other users, or view stats about themself.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood
+ *
+ * @version November 15, 2022
+ *
+ */
+
 @SuppressWarnings("ReassignedVariable")
 public class Menu {
     public static void main(String[] args) throws IOException {
