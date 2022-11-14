@@ -39,7 +39,7 @@ public class Menu {
                             LoggingIn = false;                  // to end an infinite loop
                         break;
                     case "2":
-                        user = createAccount(scanner);          // After creating acc, user is already counted as loged in user
+                        user = createAccount(scanner, "login.csv");          // After creating acc, user is already counted as loged in user
                         if (user != null) {
                             LoggingIn = false;              // breaks infinite loop
                             currUser = user;                // user is logged in
