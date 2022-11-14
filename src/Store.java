@@ -12,6 +12,10 @@ import java.util.ArrayList;
  */
 public class Store {
 
+    /*
+    This class was created specifically for the Seller class, it doesn't really have any complicated methods in it.
+    */
+
     private String storeName;
     
     private int messagesReceived;

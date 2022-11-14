@@ -18,6 +18,10 @@ import java.util.HashMap;
 
 public class Seller extends User {
 
+    /*
+    compared to the parent class User, Seller class has additional values such as stores, in order to keep track of the stores which our Seller owns
+    */
+
     private ArrayList<Store> newStores = new ArrayList<>();
     private ArrayList<String> stores = new ArrayList<>();
 
@@ -28,6 +32,8 @@ public class Seller extends User {
     public Seller (String username, String email, String password, ArrayList<String> blockedUsernames) {
         super(username, email, password, blockedUsernames);
     }
+
+    //adds provided name of the store to the stores ArrayList
     public void createStore(String storeName) {
         stores.add(storeName);
         newStores.add(new Store(storeName));

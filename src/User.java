@@ -15,10 +15,12 @@ import java.util.ArrayList;
  */
 
 public class User {
-
+    // Main fields in the User is email, username, and password
+    // It also has additional ArrayList field, which saves the blockedUsers
     private String email;
     private final String username;
-    private ArrayList<Message> messages = new ArrayList<>();
+    private ArrayList<Message> messages = new ArrayList<>();             // this is an important field that saves all messages that are related to that user
+                                                                         // we use specific method to parse through messages and assign those values to the messages field
 
     private String password;
 
@@ -26,6 +28,8 @@ public class User {
 
     private ArrayList<String> blockedUsernames = new ArrayList<>();
 
+    // basic constructor, which creates User object using username, email, and password
+    // it's not used directly in the Menu.java, it's main purpose is when creating Buyer and Seller objects
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
@@ -79,7 +83,8 @@ public class User {
         this.messages = messages;
     }
 
-    ArrayList<Message> parseMessages() throws IOException {
+    ArrayList<Message> parseMessages() throws IOException {        // this method is responsible for cherry picking the messages that contains our user's username
+                                                                   // in either sender or receiver part of the message
         ArrayList<Message> wholeFile = readWholeFile();
 
         ArrayList<Message> temp = new ArrayList<>();
@@ -91,7 +96,8 @@ public class User {
         return temp;
     }
 
-    ArrayList<Message> readWholeFile() throws IOException {
+    ArrayList<Message> readWholeFile() throws IOException {             // this method is responsible for reading the messages.csv file, and converting the every line there
+                                                                        // to the Message object. Method return ArrayList of those Message objects
         ArrayList<Message> fileContent = new ArrayList<>();
         BufferedReader bfr = new BufferedReader(new FileReader("messages.csv"));
         String st;
@@ -100,12 +106,23 @@ public class User {
             for (int i = 0; i < temp.size(); i++) {
                 temp.set(i, temp.get(i).substring(1, temp.get(i).length()-1));
             }
+            // we use specific constructor in the Message.java to assign values to the Message object when reading from file
             fileContent.add(new Message(Integer.parseInt(temp.get(0)),temp.get(1),temp.get(2),temp.get(3),temp.get(4),Boolean.parseBoolean(temp.get(5)),Boolean.parseBoolean(temp.get(6))));
         }
         return fileContent;
     }
 
+    /* this is very useful method that is used to read singular lines in the files
+    it's functionality is fairly basic:
+    For example we receive an line ---          "abc","34234","I like apples, bananas, watermelon"
+    As an output it will give us an ArrayList abc(for example) where
+    abc.get(0)     ->   abc
+    abc.get(1)     ->   34234
+    abc.get(2)     ->   I like apples, bananas, watermelon
+    We couldn't use regular split() function, so we created this one to help us solve the problem
+    */
     public ArrayList<String> customSplitSpecific(String s)
+
     {
         ArrayList<String> words = new ArrayList<>();
         boolean notInsideComma = true;
@@ -124,6 +141,7 @@ public class User {
         return words;
     }
 
+    //adds user provided in the method to the blockedUsers list
     public boolean blockUser(String username, ArrayList<User> users) {
         for (User u : users) {
             if (u.getUsername().equalsIgnoreCase(username)) {
@@ -134,6 +152,7 @@ public class User {
         return false;
     }
 
+    // removes specific person from the blockedUsers list
     public boolean unblockUser(String username, ArrayList<User> users) {
         for (User u : users) {
             if (u.getUsername().equalsIgnoreCase(username)) {
@@ -144,6 +163,7 @@ public class User {
         return false;
     }
 
+    //basic getters and setters
     public String getPassword() {
         return password;
     }
@@ -152,6 +172,7 @@ public class User {
         this.password = password;
     }
 
+    //sets all main values to null to delete the user
     public void removeUser() {
         email = null;
         password = null;
@@ -171,6 +192,7 @@ public class User {
         return blockedUsers;
     }
 
+    // this methods main goal is to be overwritten in the child classes
     public void viewStatistics(boolean alphabetical) throws IOException {
 
     }

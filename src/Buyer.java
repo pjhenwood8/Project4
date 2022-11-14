@@ -17,6 +17,8 @@ import java.util.HashMap;
  */
 
 public class Buyer extends User {
+
+    //basic constructors
     public Buyer (String username, String email, String password) {
         super(username, email, password);
     }

@@ -12,15 +12,19 @@ import java.time.format.DateTimeFormatter;
  *
  */
 public class Message {
-    private final int id;
-    private static int count = 0;
-    private final String time;
-    private String sender;
-    private String receiver;
-    private String message;
-    private boolean delBySender;
-    private boolean delByReceiver;
+    private final int id;                     // unique field for every message
+    private static int count = 0;            // count is needed to assign unique value of ID to each message
+    private final String time;                // time at which message was sent
+    private String sender;                    // username of the sender
+    private String receiver;                    // username of the receiver
+    private String message;                     // content of the message itself
+    private boolean delBySender;                // indicates whether message was deleted by the sender of the message
+    private boolean delByReceiver;              // indicates whether message was deleted by the receiver of the message
 
+    /*
+    This constructor which has a lot of value is used to assign values from the file to the Message object. We use it when we read the file, and parse through
+    already existing messages
+    * */
     public Message(int id, String time, String sender, String receiver, String message, boolean delBySender, boolean delByReceiver) {
         count++;
         this.id = id;
@@ -32,19 +36,24 @@ public class Message {
         this.delByReceiver = delByReceiver;
     }
 
+    /*
+    This constructor is used when CREATING NEW MESSAGE, since time for the new message can be calculated, and other parameters are set to default values, when
+    just creating the new message
+    * */
     public Message(String sender, String receiver, String message) {
         LocalDateTime myDateObj = LocalDateTime.now();
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");       // this lines are responsible for saving current time into the field
         this.time = myDateObj.format(myFormatObj);
         count++;
         this.id = count;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
-        delByReceiver = false;
-        delBySender = false;
+        delByReceiver = false;      //default values
+        delBySender = false;        //default values
     }
 
+    //Most of the methods here are default getters and setters, nothing that much to see
     public boolean isDelBySender() {
         return delBySender;
     }
@@ -93,6 +102,8 @@ public class Message {
         this.message = message;
     }
 
+    // we use toString() method in the Menu.java in the main method, when we want to display Message object as a nice-looking
+    // feed lines.  Arrow indicated the sender and receiver of the message.
     public String toString() {
         return String.format("%s   (%s -> %s)%n%s%n", time, sender, receiver, message);
     }
