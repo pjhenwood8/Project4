@@ -1013,6 +1013,7 @@ public class Menu {
         }
     }
 public static User login(Scanner scanner) {
+    // Intialize variables
         ArrayList<String[]> users = new ArrayList<>();
         ArrayList<String> tempArrayList = new ArrayList<>();
         String[] tempArray;
@@ -1039,6 +1040,7 @@ public static User login(Scanner scanner) {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    //Loops forever until a valid email and password are entered, or the escape sequence is ran
         while (true) {
             System.out.println("Please enter your email:");
             email = scanner.nextLine();
@@ -1056,6 +1058,7 @@ public static User login(Scanner scanner) {
                     }
                 }
             }
+            //if the email or password does not match an existing account it is printed
             if (invEmail) {
                 System.out.println("Your email was incorrect");
             } else {
@@ -1075,6 +1078,7 @@ public static User login(Scanner scanner) {
     }
 
     public static User createAccount(Scanner scanner, String file) {
+        //Variables are intialized
         ArrayList<String[]> userFile = new ArrayList<>();
         User user = null;
         String email = "";
@@ -1090,6 +1094,7 @@ public static User login(Scanner scanner) {
         boolean invEmail = true;
         boolean invPass = true;
         boolean invBuyer = true;
+        //The array userFile is filled with all the information of users from login.csv
         try {
             BufferedReader bfr = new BufferedReader(new FileReader(file));
             String line = bfr.readLine();
@@ -1109,7 +1114,8 @@ public static User login(Scanner scanner) {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        //Loops until a valid email is inputed, a valid email being an email that is 
+        //not previously used and does not have and @ sign or comma
         System.out.println("A valid email contains an @ sign and has no commas");
         while(invEmail){
             System.out.print("Please enter a valid email: ");
@@ -1128,6 +1134,8 @@ public static User login(Scanner scanner) {
                 invEmail = false;
             }
         }
+        //Loops until a valid username is inputed, a valid username being a username that is 
+        //not previously used and does not have a comma
         System.out.println("A valid username contains no commas");
         while(invUsername){
             System.out.print("Please enter a valid username: ");
@@ -1146,7 +1154,7 @@ public static User login(Scanner scanner) {
                 invUsername = false;
             }
         }
-
+        //Loops until a password is inputed
         while(invPass){
             System.out.print("Please enter a password: ");
             pass = scanner.nextLine();
@@ -1156,6 +1164,7 @@ public static User login(Scanner scanner) {
                 invPass = false;
             }
         }
+        //Loops until buyer/seller is inputed
         System.out.println("A valid user type is either Buyer or Seller");
         while(invBuyer){
             System.out.print("Please enter a valid user type: ");
@@ -1173,6 +1182,7 @@ public static User login(Scanner scanner) {
             }
 
         }
+        //The new user is written into login.csv
         try {
             PrintWriter pw = new PrintWriter(new FileOutputStream(file, false));
                 for (String[] strings : userFile) {
@@ -1183,6 +1193,7 @@ public static User login(Scanner scanner) {
         } catch (IOException e ) {
             e.printStackTrace();
         }
+        //A new user is returned using the information inputed
         return user;
     }
     
