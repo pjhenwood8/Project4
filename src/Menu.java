@@ -242,10 +242,12 @@ public class Menu {
                                         }
                                         System.out.println("Enter name of the store");
                                         String store = scanner.nextLine();
+                                        boolean flag = false;
                                         for (User value : users) {
                                             if (value instanceof Seller) {
                                                 for (int j = 0; j < ((Seller) value).getStores().size(); j++) {
                                                     if (((Seller) value).getStores().get(j).equals(store)) {
+                                                        flag = true;
                                                         System.out.println("Enter message you want to send to that store");
                                                         String msg = scanner.nextLine();
                                                         ArrayList<Message> temp = currUser.getMessages();
@@ -281,11 +283,12 @@ public class Menu {
                                                                 System.out.print(message.toString());
                                                             }
                                                         }
-                                                    } else {
-                                                        System.out.println("That store doesn't Exist!");
                                                     }
                                                 }
                                             }
+                                        }
+                                        if (!flag) {
+                                            System.out.println("That store doesn't exist!");
                                         }
                                         saveMessages(currUser);
                                     } else if (makeChoice == 2) {
