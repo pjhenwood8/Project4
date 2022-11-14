@@ -136,9 +136,96 @@ public class RunLocalTest {
             expected.add(new Message("sender1","receiver","Test1"));
             assertEquals(expected.toString(), menu.parseStoreMessages(user,"sender1").toString());
         }
-        @Test(timeout = 1000)
-        public void testWriteStores() {
+        
+            @Test(timeout = 1000)
+        public void testParseUsers(){
+            User user1 = new User("Buyer1", "buyer1@purdue.edu", "password1234");
+            assertEquals(Arrays.toString(new String[]{"Seller1"}), Arrays.toString(Menu.parseUsers(user1)));
+        }
 
+        @Test(timeout = 1000)
+        public void testParseMessageHistory(){
+            User user1 = new User("mann", "mann72@purdue.edu", "12345");
+            ArrayList<Message> mList = new ArrayList<>();
+            mList.add(new Message(155, "13-11-2022 01:18:33", "mann", "alik",
+                    "Hey man where is my money", false, false));
+            assertEquals(mList.toString(), Menu.parseMessageHistory(user1, "alik").toString());
+        }
+
+        @Test(timeout = 1000)
+        public void testWriteUsers() throws IOException {
+            User user1 = new User("Buyer1", "buyer1@purdue.edu", "password1234");
+            User user2 = new User("a", "a@gmail.com", "123");
+            User user3 = new User("b", "b@gmail.com", "1234");
+            ArrayList<User> uList = new ArrayList<>();
+            uList.add(user1);
+            uList.add(user2);
+            uList.add(user3);
+            Menu.writeUsers("test.csv", uList);
+            BufferedReader br = new BufferedReader(new FileReader("test.csv"));
+            String line = br.readLine();
+            String concString = "";
+            while(line != null){
+                concString += line;
+                System.out.println(line);
+                line = br.readLine();
+            }
+            assertEquals("\"Buyer1\",\"buyer1@purdue.edu\",\"password1234\",\"s\",\"\"" +
+                            "\"a\",\"a@gmail.com\"," + "\"123\",\"s\",\"\"" +
+                    "\"b\",\"b@gmail.com\",\"1234\",\"s\"," +
+                    "\"\"", concString);
+        }
+
+        @Test(timeout = 1000)
+        public void testAddBlockedUsers(){
+            ArrayList<String> bList = new ArrayList<>();
+            bList.add("a");
+            User user1 = new User("Buyer1", "buyer1@purdue.edu", "password1234", bList);
+            User user2 = new User("a", "a@gmail.com", "123");
+            User user3 = new User("b", "b@gmail.com", "1234");
+            ArrayList<User> uList = new ArrayList<>();
+            uList.add(user1);
+            uList.add(user2);
+            uList.add(user3);
+            Menu.addBlockedUsers(uList);
+            assertEquals("[a]", user1.getBlockedUsernames().toString());
+        }
+
+        @Test(timeout = 1000)
+        public void testSaveMessages() throws IOException {
+            User user1 = new User("Buyer1", "buyer1@purdue.edu", "password1234");
+            ArrayList<Message> mList = new ArrayList<>();
+            mList.add(new Message(169, "13-11-2022 02:23:31", "Buyer1", "Seller1", "Hi there", false, false));
+            Menu.saveMessages(user1);
+            assertEquals(mList.toString(), "[13-11-2022 02:23:31   (Buyer1 -> Seller1)\nHi there\n]");
+        }
+        
+        @Test(timeout = 1000)
+        public void testWriteStores() throws IOException {
+            User user1 = new Buyer("Buyer1", "buyer1@purdue.edu", "password1234");
+            User user2 = new Buyer("a", "a@gmail.com", "123");
+            User user3 = new Buyer("b", "b@gmail.com", "1234");
+            ArrayList<Buyer> bList = new ArrayList<>();
+            bList.add((Buyer) user1);
+            bList.add((Buyer) user2);
+            bList.add((Buyer) user3);
+            Store store1 = new Store("store1", 1);
+            Store store2 = new Store("store2", 2);
+            Store store3 = new Store("store3", 3, bList);
+            ArrayList<Store> sList = new ArrayList<>();
+            sList.add(store1);
+            sList.add(store2);
+            sList.add(store3);
+            Menu.writeStores("test.csv", sList);
+            BufferedReader br = new BufferedReader(new FileReader("test.csv"));
+            String line = br.readLine();
+            String concStr = "";
+            while (line != null){
+                concStr += line;
+                line = br.readLine();
+            }
+            assertEquals("\"store1\",\"1\",\"\"\"store2\",\"2\",\"\"\"store3" +
+                    "\",\"3\",\"Buyer1,a,b\"", concStr);
         }
 
         @Test(timeout = 1000)
