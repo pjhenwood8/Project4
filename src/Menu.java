@@ -39,11 +39,11 @@ public class Menu {
                             LoggingIn = false;                  // to end an infinite loop
                         break;
                     case "2":
-                        user = createAccount(scanner, "login.csv");          // After creating acc, user is already counted as loged in user
+                        user = createAccount(scanner, "login.csv");          // After creating acc, user is already counted as logged-in user
                         if (user != null) {
                             LoggingIn = false;              // breaks infinite loop
                             currUser = user;                // user is logged in
-                            users.add(user);                // add user to the ArraList of all users
+                            users.add(user);                // add user to the ArrayList of all users
                         }
                         break;
                     case "3":                    // To exit program
@@ -167,7 +167,7 @@ public class Menu {
                                                    1) Write new message
                                                    when writing new message you are presented with 2 options
                                                         1) Either write a regular message
-                                                            you type a message and it send it to the receiver
+                                                            you type a message, and it sends it to the receiver
                                                         2) Upload a txt file, contents of which will be included in the message
                                                             it will read through the file content and add new lines where needed
                                                    2) Edit message
@@ -245,7 +245,7 @@ public class Menu {
                                                         z++;
                                                     }
                                                     System.out.println("Choose message to edit");
-                                                    choice = Integer.parseInt(scanner.nextLine());           // user chooses which message availible for him to edit he wants to edit
+                                                    choice = Integer.parseInt(scanner.nextLine());           // user chooses which message available for him to edit he wants to edit
                                                     System.out.println("To which message you want to change it?");
                                                     String msg = scanner.nextLine();                   // user enters the message to which user wants to change his message
                                                     Message temp = userIsSender.get(choice - 1);       // we grab value form the userIsSender which stores only messages where main user is sender
@@ -280,8 +280,8 @@ public class Menu {
                                                             break;
                                                         }
                                                     }
-                                                    user.refreshMessages();            // refreshMessages is used to remove some of the messages in the messages field of the user, because we need to be
-                                                                                       // manually remove some of the messages in the messages field. setMessages isn't enough, because it doesn't actually removes messages
+                                                    user.refreshMessages();            // refreshMessages is used to remove some messages in the messages field of the user, because we need to be
+                                                                                       // manually remove some messages in the messages field. setMessages isn't enough, because it doesn't actually remove messages
                                                                                        // it only updates its values
                                                 }
                                                 if (optionChoice == 0) {          // if user chooses to exit, we break from infinite loop
@@ -293,9 +293,9 @@ public class Menu {
                                     saveMessages(user);                          // after everything is finished, we save the current messages field of the user to the messages.csv using this method
                                 } else if (currUser instanceof Buyer) {
                                     /*
-                                    if you are buyer, when trying to enter the Messaging part of the program, you will presented with 3 options
+                                    if you are buyer, when trying to enter the Messaging part of the program, you will be presented with 3 options
                                     1) Either you write to the store that interests you
-                                    When you write message to the message, your message will be sent to the owner of the store, and you will be redirected to the converstion with Seller
+                                    When you write message to the message, your message will be sent to the owner of the store, and you will be redirected to the conversation with Seller
                                     2) Or you write to a specific seller, just like you do message with a normal person
                                     0) Exits to the menu
                                     */
@@ -364,7 +364,7 @@ public class Menu {
                                         if (!flag) {              // flag is false when store doesn't exist
                                             System.out.println("That store doesn't exist!");
                                         }
-                                        saveMessages(currUser);                            // updates the messages.csv file with the changes that have been made to the messsages field of the user
+                                        saveMessages(currUser);                            // updates the messages.csv file with the changes that have been made to the messages field of the user
                                     } else if (makeChoice == 2) {                          // if user chooses to write to the specific Seller directly
                                         while (true) {
                                             ArrayList<Message> messageHistory;
@@ -559,12 +559,12 @@ public class Menu {
                                     User is presented with 4 options
                                     */
                                     System.out.println("Select in which order you want to sort\n[1] Alphabetical\n[2] Reverse alphabetical\n[3] Most common words\n[0] Exit");
-                                    int alphabetical = Integer.parseInt(scanner.nextLine());
+                                    int alphabetical = Integer.parseInt(scanner.nextLine()); // Assigns alphabetical to user choice as an int.
                                     if (currUser instanceof Buyer) {
                                         if (alphabetical == 1)
-                                            currUser.viewStatistics(true);
+                                            currUser.viewStatistics(true); // shows user statistics in alphabetical order
                                         else if (alphabetical == 2)
-                                            currUser.viewStatistics(false);
+                                            currUser.viewStatistics(false); // shows user statistics in reverse alphabetical order
                                         else if (alphabetical == 3) {
                                             ArrayList<Message> allMessages = new ArrayList<>();
                                             String word = "";
@@ -576,14 +576,15 @@ public class Menu {
                                             int thirdCount = 0;
                                             for (User u1 : users) {
                                                 if (u1 != currUser) {
-                                                    allMessages.addAll(parseMessageHistory(currUser, u1.getUsername()));
+                                                    allMessages.addAll(parseMessageHistory(currUser, u1.getUsername())); // adds all messages to an arrayList
                                                 }
                                             }
                                             String message = "";
                                             for (Message m : allMessages) {
-                                                message += m.getMessage() + " ";
+                                                message += m.getMessage() + " "; // creates a string with all every word in all messages
                                             }
-                                            String[] wordArr = message.split(" ");
+                                            String[] wordArr = message.split(" "); // creates a string array for every word
+                                            // Gets the most commonly used word and the number of times it is used
                                             for (int k = 0; k < wordArr.length; k++) {
                                                 count = 1;
                                                 for (int l = k + 1; l < wordArr.length; l++) {
@@ -597,6 +598,7 @@ public class Menu {
                                                     word = wordArr[k];
                                                 }
                                             }
+                                            // Gets the second most commonly used word and the number of times it is used
                                             String[] newWordArr = new String[wordArr.length - maxCount];
                                             int i = 0;
                                             for (String s : wordArr) {
@@ -616,9 +618,9 @@ public class Menu {
                                                 if (count > secondCount) {
                                                     secondWord = newWordArr[k];
                                                     secondCount = count;
-                                                    //word = wordArr[k];
                                                 }
                                             }
+                                            // Gets the third most commonly used word and the number of times it is used
                                             String[] new2WordArr = new String[newWordArr.length - secondCount];
                                             i = 0;
                                             for (String s : newWordArr) {
@@ -640,6 +642,7 @@ public class Menu {
                                                     thirdWord = new2WordArr[k];
                                                 }
                                             }
+                                            // Prints the first, second, and third most commonly used words
                                             System.out.println("The most common word in Messages is " + word + " said " + maxCount + " times");
                                             System.out.println("The second common word in Messages is " + secondWord + " said " + secondCount + " times");
                                             System.out.println("The third most common word in Messages is " + thirdWord + " said " + thirdCount + " times");
@@ -648,24 +651,24 @@ public class Menu {
                                             break;
                                     } else if (currUser instanceof Seller) {
                                         Map<String, Integer> sentMessages = new HashMap<>();
-                                        for (User u : users) {
+                                        for (User u : users) { // Iterates through every user
                                             int count;
                                             ArrayList<Message> messages;
                                             if (!u.equals(currUser) && u instanceof Buyer) {
-                                                 messages = parseStoreMessages(currUser, u.getUsername());
-                                                count = messages.size();
-                                                sentMessages.put(u.getUsername(), count);
+                                                 messages = parseStoreMessages(currUser, u.getUsername()); // gets all messages sent to the current user's store from a user
+                                                count = messages.size(); // gets number of messages from the sender
+                                                sentMessages.put(u.getUsername(), count); // assigns the users and number of messages they sent to a hashmap
                                             }
                                         }
                                         ArrayList<String> sortedSentMessages = new ArrayList<>(sentMessages.keySet());
-                                        Collections.sort(sortedSentMessages);
+                                        Collections.sort(sortedSentMessages); // sorts users
                                         if (alphabetical == 1) {
                                             for (String s : sortedSentMessages) {
-                                                System.out.printf("%s sent %d messages%n", s, sentMessages.get(s));
+                                                System.out.printf("%s sent %d messages%n", s, sentMessages.get(s)); // writes the user and number of messages they sent alphabetically
                                             }
                                         } else if (alphabetical == 2) {
                                             for (int j = sortedSentMessages.size() - 1; j >= 0; j--) {
-                                                System.out.printf("%s sent %d messages%n", sortedSentMessages.get(j), sentMessages.get(sortedSentMessages.get(j)));
+                                                System.out.printf("%s sent %d messages%n", sortedSentMessages.get(j), sentMessages.get(sortedSentMessages.get(j))); // // writes the user and number of messages they sent reverse alphabetically
                                             }
                                         } else if (alphabetical == 0) {
                                             break;
@@ -687,6 +690,7 @@ public class Menu {
                                             for (Message m : allMessages) {
                                                 message += m.getMessage() + " ";
                                             }
+                                            // Gets the most commonly used word and the number of times it is used
                                             String[] wordArr = message.split(" ");
                                             for (int k = 0; k < wordArr.length; k++) {
                                                 count = 1;
@@ -701,6 +705,7 @@ public class Menu {
                                                     word = wordArr[k];
                                                 }
                                             }
+                                            // Gets the second most commonly used word and the number of times it is used
                                             String[] newWordArr = new String[wordArr.length - maxCount];
                                             int i = 0;
                                             for (String s : wordArr) {
@@ -720,9 +725,9 @@ public class Menu {
                                                 if (count > secondCount) {
                                                     secondWord = newWordArr[k];
                                                     secondCount = count;
-                                                    //word = wordArr[k];
                                                 }
                                             }
+                                            // Gets the third most commonly used word and the number of times it is used
                                             String[] new2WordArr = new String[newWordArr.length - secondCount];
                                             i = 0;
                                             for (String s : newWordArr) {
@@ -754,13 +759,16 @@ public class Menu {
                                 }
                                 break;
                             case 3:
+                                // options for the user's account
                                 do {
                                     System.out.printf("%s - Account Details%n", currUser.getUsername());
                                     System.out.println("--------------");
                                     System.out.printf("Email: %s%nPassword: %s%n", currUser.getEmail(), currUser.getPassword());
                                     if (currUser instanceof Seller) {
+                                        // shows 4 options if user is a seller
                                         System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Block/Unblock User\n[4] Create New Store\n[0] Exit");
                                     } else {
+                                        // shows 3 options if user is a buyer
                                         System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Block/Unblock User\n[0] Exit");
                                     }
                                     choice = scanner.nextInt();
@@ -768,43 +776,44 @@ public class Menu {
                                         throw new InputMismatchException();
                                     }
                                     switch (choice) {
-                                        case 1:
+                                        case 1:                     // user selects edit account
                                             scanner.nextLine();
                                             System.out.println("[1] Change Email\n[2] Change Password\n[0] Exit");
                                             choice = scanner.nextInt();
                                             String newAccountInfo;
                                             if (choice > 2) {
-                                                throw new InputMismatchException();
+                                                throw new InputMismatchException(); // throws an exception if user types invalid option
                                             }
                                             switch (choice) {
-                                                case 1 -> {
+                                                case 1 -> {         // user selects change email
                                                     scanner.nextLine();
                                                     do {
                                                         System.out.println("Enter new email:");
-                                                        newAccountInfo = scanner.nextLine();
+                                                        newAccountInfo = scanner.nextLine();       // user types new email
                                                         if (newAccountInfo.contains("@") && newAccountInfo.contains(".")) {
-                                                            currUser.setEmail(newAccountInfo);
+                                                            currUser.setEmail(newAccountInfo); // if new email is valid changes current user's email to new email
                                                         } else {
-                                                            System.out.println("Error: Enter a valid email!");
+                                                            System.out.println("Error: Enter a valid email!");  // user inputs an invalid email (does not contain @ and .)
                                                             newAccountInfo = "";
                                                         }
                                                     } while (newAccountInfo.isEmpty());
-                                                    System.out.printf("Email changed to: %s%n", newAccountInfo);
+                                                    System.out.printf("Email changed to: %s%n", newAccountInfo); // shows that the user's email was changed
                                                 }
-                                                case 2 -> {
+                                                case 2 -> {         // user selects change password
                                                     scanner.nextLine();
                                                     System.out.println("Enter new password:");
-                                                    newAccountInfo = scanner.nextLine();
-                                                    currUser.setPassword(newAccountInfo);
-                                                    System.out.printf("Password changed to: %s%n", newAccountInfo);
+                                                    newAccountInfo = scanner.nextLine(); // user types new password
+                                                    currUser.setPassword(newAccountInfo); // changes user's password to new password
+                                                    System.out.printf("Password changed to: %s%n", newAccountInfo); // shows that the user's password was changed
                                                 }
                                             }
                                             break;
-                                        case 2:
+                                        case 2:         // user selects delete account
                                             scanner.nextLine();
-                                            System.out.println("Are you sure you want to delete this user? [Y/N]");
-                                            String yesNo = scanner.nextLine();
+                                            System.out.println("Are you sure you want to delete this user? [Y/N]");     // makes sure user wants to delete their account
+                                            String yesNo = scanner.nextLine();      // user selects Y or N
                                             if (yesNo.equalsIgnoreCase("Y")) {
+                                                // user selects Y, their account is deleted (Their messages to other users will remain)
                                                 System.out.printf("User [%s] successfully deleted%n", currUser.getUsername());
                                                 currUser.removeUser();
                                                 users.remove(currUser);
@@ -812,55 +821,55 @@ public class Menu {
                                                 currUser = null;
                                             }
                                             break;
-                                        case 3:
+                                        case 3: // user selects block/unblock users
                                             System.out.println("Blocked Users: ");
-                                            for (User b : currUser.getBlockedUsers()) {
+                                            for (User b : currUser.getBlockedUsers()) { // shows list of currently blocked users
                                                 System.out.println(b.getUsername());
                                             }
                                             System.out.println("--------------");
-                                            System.out.println("[1] Block new User\n[2] Unblock Users\n[3] Exit");
+                                            System.out.println("[1] Block new User\n[2] Unblock Users\n[3] Exit"); // Asks if user wants to block or unblock a user
                                             choice = scanner.nextInt();
                                             scanner.nextLine();
                                             switch (choice) {
-                                                case 1:
+                                                case 1:         // user selects block user
                                                     System.out.println("Enter name of user to block:");
-                                                    String blockUsername = scanner.nextLine();
+                                                    String blockUsername = scanner.nextLine(); // user enters username of user to block
                                                     if (currUser.blockUser(blockUsername, users)) {
-                                                        System.out.println(blockUsername + " blocked");
+                                                        System.out.println(blockUsername + " blocked"); // if that user exist they are blocked
                                                     } else {
-                                                        System.out.println("That user doesn't exist");
+                                                        System.out.println("That user doesn't exist"); // if they don't exist tell user
                                                     }
                                                     break;
-                                                case 2:
+                                                case 2:        // user select unblock user
                                                     System.out.println("Enter name of user to unblock:");
-                                                    String unblockUsername = scanner.nextLine();
+                                                    String unblockUsername = scanner.nextLine(); // user enters username of user to unblock
                                                     if (currUser.unblockUser(unblockUsername, users)) {
-                                                        System.out.println(unblockUsername + " unblocked");
+                                                        System.out.println(unblockUsername + " unblocked"); // if that user is currently blocked they are unblocked
                                                     } else {
-                                                        System.out.println("That user doesn't exist in your blocked list");
+                                                        System.out.println("That user doesn't exist in your blocked list"); // if they aren't blocked tell user
                                                     }
                                                     break;
                                                 case 3:
                                                     break;
                                             }
-                                            writeUsers("login.csv", users);
+                                            writeUsers("login.csv", users); // writes changes to login.csv file
                                             break;
                                         case 4:
                                             if (currUser instanceof Buyer) {
-                                                break;
-                                            } else if (currUser instanceof Seller) {
+                                                break; // if user is a buyer do nothing
+                                            } else if (currUser instanceof Seller) {    // if user is seller allow user to create store
                                                 System.out.println("Your Stores:");
                                                 for (String storeName : ((Seller) currUser).getStores()) {
-                                                    System.out.println(storeName);
+                                                    System.out.println(storeName); // shows list of current stores by current user
                                                 }
                                                 System.out.println("--------------");
                                                 scanner.nextLine();
                                                 System.out.println("Enter name for new store");
                                                 String storeName = scanner.nextLine();
-                                                ((Seller) currUser).createStore(storeName);
+                                                ((Seller) currUser).createStore(storeName); // adds new store
                                                 stores.add(new Store(storeName,0));
-                                                writeStores("stores.csv", stores);
-                                                writeUsers("login.csv", users);
+                                                writeStores("stores.csv", stores); // updates stores.csv
+                                                writeUsers("login.csv", users); // updates login.csv
                                                 break;
                                             }
                                         default:
@@ -879,12 +888,12 @@ public class Menu {
                 }
             }
             if (currUser != null) {
-                System.out.println("Successfully Logged out\n");
+                System.out.println("Successfully Logged out\n"); // user logs out
             } else {
-                System.out.println("Thank you for using the messaging service");
+                System.out.println("Thank you for using the messaging service"); // user leaves program
             }
-            writeUsers("login.csv", users);
-            writeStores("stores.csv", stores);
+            writeUsers("login.csv", users); // updates login.csv
+            writeStores("stores.csv", stores); // updates stores.csv
         }
     }
 
@@ -1049,7 +1058,7 @@ public class Menu {
         }
     }
 public static User login(Scanner scanner) {
-    // Intialize variables
+    // Initialize variables
         ArrayList<String[]> users = new ArrayList<>();
         ArrayList<String> tempArrayList = new ArrayList<>();
         String[] tempArray;
@@ -1114,7 +1123,7 @@ public static User login(Scanner scanner) {
     }
 
     public static User createAccount(Scanner scanner, String file) {
-        //Variables are intialized
+        //Variables are initialized
         ArrayList<String[]> userFile = new ArrayList<>();
         User user = null;
         String email = "";
@@ -1150,7 +1159,7 @@ public static User login(Scanner scanner) {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //Loops until a valid email is inputed, a valid email being an email that is 
+        //Loops until a valid email is inputted, a valid email being an email that is
         //not previously used and does not have and @ sign or comma
         System.out.println("A valid email contains an @ sign and has no commas");
         while(invEmail){
@@ -1159,6 +1168,7 @@ public static User login(Scanner scanner) {
             for (String[] strings : userFile) {
                 if (email.equals(strings[1])) {
                     repeatEmail = true;
+                    break;
                 }
             }
             if (email.contains(",") || !email.contains("@")) {
@@ -1170,7 +1180,7 @@ public static User login(Scanner scanner) {
                 invEmail = false;
             }
         }
-        //Loops until a valid username is inputed, a valid username being a username that is 
+        //Loops until a valid username is inputted, a valid username being a username that is
         //not previously used and does not have a comma
         System.out.println("A valid username contains no commas");
         while(invUsername){
@@ -1179,6 +1189,7 @@ public static User login(Scanner scanner) {
             for (String[] strings : userFile) {
                 if (userName.equals(strings[0])) {
                     repeatUser = true;
+                    break;
                 }
             }
             if (userName.contains(",") || userName.equals("")) {
@@ -1190,7 +1201,7 @@ public static User login(Scanner scanner) {
                 invUsername = false;
             }
         }
-        //Loops until a password is inputed
+        //Loops until a password is inputted
         while(invPass){
             System.out.print("Please enter a password: ");
             pass = scanner.nextLine();
@@ -1200,7 +1211,7 @@ public static User login(Scanner scanner) {
                 invPass = false;
             }
         }
-        //Loops until buyer/seller is inputed
+        //Loops until buyer/seller is inputted
         System.out.println("A valid user type is either Buyer or Seller");
         while(invBuyer){
             System.out.print("Please enter a valid user type: ");
@@ -1229,11 +1240,15 @@ public static User login(Scanner scanner) {
         } catch (IOException e ) {
             e.printStackTrace();
         }
-        //A new user is returned using the information inputed
+        //A new user is returned using the information inputted
         return user;
     }
 
-    //
+    /*
+        reads the login.csv file and assigns each line to a User object. User object will consist of username,
+        email, password, a list of blocked user, if they are a buyer or seller, and sellers will have stores.
+        Then assigns users to an arraylist.
+     */
     public static ArrayList<User> readUsers(String filename) throws FileNotFoundException {
         File f = new File(filename);
         ArrayList<String> lines = new ArrayList<>();
@@ -1304,6 +1319,10 @@ public static User login(Scanner scanner) {
         return users;
     }
 
+    /*
+        reads the stores.csv file and assigns each line to a Store object. Store object will consist of store name,
+        number of times this store was messaged, and users that messaged this store. Then assigns stores to an Arraylist.
+     */
     public static ArrayList<Store> readStores(String filename, ArrayList<User> users) throws FileNotFoundException {
         File f = new File(filename);
         ArrayList<String> lines = new ArrayList<>();
@@ -1363,6 +1382,7 @@ public static User login(Scanner scanner) {
         return stores;
     }
 
+    // Writes stores to stores.csv. writes store names, number of times store was messaged. and users that messaged this store
     public static void writeStores(String filename, ArrayList<Store> stores) {
         File f = new File(filename);
         try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, false))) {
@@ -1390,6 +1410,7 @@ public static User login(Scanner scanner) {
         }
     }
 
+    // returns an arraylist of messages that went to store or mainClient
     public static ArrayList<Message> parseStoreMessages(User mainClient, String thirdParty) {
         ArrayList<Message> messages = mainClient.getMessages();
         ArrayList<Message> temp = new ArrayList<>();

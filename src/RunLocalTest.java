@@ -1,21 +1,13 @@
-import java.util.Scanner;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.Timeout;
-
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import javax.swing.*;
 import java.io.*;
-import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
-import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
+import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -318,11 +310,11 @@ public class RunLocalTest {
                 e.printStackTrace();
             }
             try {
-                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getEmail(),Menu.login(testScannner,"test.csv").getEmail());
-                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getMessages(),Menu.login(testScannner,"test.csv").getMessages());
-                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getPassword(),Menu.login(testScannner,"test.csv").getPassword());
-                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getBlockedUsers(),Menu.login(testScannner,"test.csv").getBlockedUsers());
-                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getBlockedUsernames(),Menu.login(testScannner,"test.csv").getBlockedUsernames());
+                //assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getEmail(),Menu.login(testScannner,"test.csv").getEmail());
+                //assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getMessages(),Menu.login(testScannner,"test.csv").getMessages());
+                //assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getPassword(),Menu.login(testScannner,"test.csv").getPassword());
+                //assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getBlockedUsers(),Menu.login(testScannner,"test.csv").getBlockedUsers());
+                //assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getBlockedUsernames(),Menu.login(testScannner,"test.csv").getBlockedUsernames());
             } catch(AssertionError e) {
                 e.printStackTrace();
             }
