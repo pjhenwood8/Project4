@@ -1,4 +1,5 @@
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import org.junit.runner.JUnitCore;
@@ -9,6 +10,7 @@ import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -51,7 +53,6 @@ public class RunLocalTest {
             System.setOut(new PrintStream(testOut));
         }
 
-        @After
         public void restoreInputAndOutput() {
             System.setIn(originalSysin);
             System.setOut(originalOutput);
@@ -66,3 +67,15 @@ public class RunLocalTest {
             testIn = new ByteArrayInputStream(str.getBytes());
             System.setIn(testIn);
         }
+
+        @Test(timeout = 1000)
+        public void testCustomSplitSpecific(){
+            User user = new User("a", "a@gmail.com", "123");
+            String s = "hi,I,am,a,snail";
+            String[] list = s.split(",");
+            ArrayList<String> sList = new ArrayList<>(Arrays.asList(list));
+            assertEquals("Wrong", sList,user.customSplitSpecific(s));
+
+        }
+    }
+}
