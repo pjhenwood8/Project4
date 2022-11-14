@@ -15,13 +15,15 @@ public class Menu {
         ArrayList<Store> stores = readStores("stores.csv", users);
         addBlockedUsers(users);
         while (online) {
+            System.out.println("Welcome to the Marketplace Messaging System");
+            System.out.println("--------------------------------------------");
             boolean LoggingIn = true;
             boolean loggedIn = false;
             User user = null;
             User currUser = null;
-            System.out.println("Please enter the number corresponding with your option");
+            System.out.println("Please enter the number corresponding with your option:");
             while (LoggingIn) {
-                System.out.println("1. Login\n2. Create Account\n3. Exit");
+                System.out.println("[1] Login\n[2] Create Account\n[3] Exit");
                 response = scanner.nextLine();
                 switch (response) {
                     case "1":
@@ -56,6 +58,7 @@ public class Menu {
                     }
                 }
             }
+            writeUsers("login.csv",users);
             while (loggedIn) {
                 if (currUser != null) {
                     try {
@@ -609,7 +612,7 @@ public class Menu {
                 }
             }
             if (currUser != null) {
-                System.out.println("Successfully Logged out");
+                System.out.println("Successfully Logged out\n");
             } else {
                 System.out.println("Thank you for using the messaging service");
             }
@@ -864,7 +867,7 @@ public static User login(Scanner scanner) {
         }
         System.out.println("A valid email contains an @ sign and has no commas");
         while(invEmail) {
-            System.out.print("Please enter a valid email:");
+            System.out.print("Please enter a valid email: ");
             email = scanner.nextLine();
             if (email.contains(",") || (!(email.contains("@"))) || email == null || email.equals("")) {
                 System.out.println("That email is not valid");
@@ -874,7 +877,7 @@ public static User login(Scanner scanner) {
         }
         System.out.println("A valid username contains no commas");
         while(invUsername){
-            System.out.print("Please enter a valid username:");
+            System.out.print("Please enter a valid username: ");
             userName = scanner.nextLine();
             if (userName.contains(",") || userName == null || userName.equals("")) {
                 System.out.println("That user name was not valid");
@@ -892,7 +895,7 @@ public static User login(Scanner scanner) {
             }
         }
         while(invPass){
-            System.out.print("Please enter a password:");
+            System.out.print("Please enter a password: ");
             pass = scanner.nextLine();
             if (pass == null || pass.equals("")) {
                 System.out.println("That password was not valid");
@@ -902,7 +905,7 @@ public static User login(Scanner scanner) {
         }
         System.out.println("A valid user type is either Buyer or Seller");
         while(invBuyer){
-            System.out.print("Please enter a valid user type:");
+            System.out.print("Please enter a valid user type: ");
             userType = scanner.nextLine();
             if (userType.equalsIgnoreCase("Buyer")) {
                 userType = "b";
