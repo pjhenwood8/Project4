@@ -496,7 +496,7 @@ public class Menu {
                                     if (currUser instanceof Seller) {
                                         System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Block/Unblock User\n[4] Create New Store\n[0] Exit");
                                     } else {
-                                        System.out.println("[1] Edit Account\n[2] Delete Account\n[0] Exit");
+                                        System.out.println("[1] Edit Account\n[2] Delete Account\n[3] Block/Unblock User\n[0] Exit");
                                     }
                                     choice = scanner.nextInt();
                                     if (choice > 4) {
