@@ -6,6 +6,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * Seller class
+ * This class extends the user class giving it the permissions that come with being a seller.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood
+ *
+ * @version November 15, 2022
+ *
+ */
+
 public class Seller extends User {
 
     private ArrayList<Store> newStores = new ArrayList<>();
