@@ -162,7 +162,7 @@ public class User {
         return blockedUsers;
     }
 
-    public void viewStatistics(boolean alphabetical) {
+    public void viewStatistics(boolean alphabetical) throws IOException {
 
     }
 }

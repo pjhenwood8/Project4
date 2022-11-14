@@ -480,12 +480,22 @@ public class Menu {
                                 while (true) {
                                     System.out.println("Select in which order you want to sort\n[1] Alphabetical\n[2] Reverse alphabetical");
                                     int alphabetical = Integer.parseInt(scanner.nextLine());
-                                    if (alphabetical == 1)
-                                        currUser.viewStatistics(true);
-                                    else if (alphabetical == 2)
-                                        currUser.viewStatistics(false);
-                                    else if (alphabetical == 0)
-                                        break;
+                                    if (currUser instanceof Buyer) {
+                                        if (alphabetical == 1)
+                                            ((Buyer) currUser).viewStatistics(true);
+                                        else if (alphabetical == 2)
+                                            ((Buyer) currUser).viewStatistics(false);
+                                        else if (alphabetical == 0)
+                                            break;
+                                    } else if (currUser instanceof Seller) {
+                                        if (alphabetical == 1)
+                                            ((Seller) currUser).viewStatistics(true);
+                                        else if (alphabetical == 2)
+                                            ((Seller) currUser).viewStatistics(false);
+                                        else if (alphabetical == 0)
+                                            break;
+                                    }
+
                                 }
                                 break;
                             case 3:
@@ -548,7 +558,7 @@ public class Menu {
                                             }
                                             break;
                                         case 3:
-                                            System.out.println("Blocked Users");
+                                            System.out.println("Blocked Users: ");
                                             for (User b : currUser.getBlockedUsers()) {
                                                 System.out.println(b.getUsername());
                                             }

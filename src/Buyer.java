@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.*;
 
 public class Buyer extends User{
     public Buyer (String username, String email, String password) {
@@ -15,7 +18,12 @@ public class Buyer extends User{
     }
     
     public void viewStatistics(boolean alphabetical) throws IOException {
-        FileReader fr = new FileReader("stores.csv");
+        FileReader fr = null;
+        try {
+            fr = new FileReader("stores.csv");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         BufferedReader br = new BufferedReader(fr);
         ArrayList<String> messages = new ArrayList<>();
         ArrayList<String> stores = new ArrayList<>();
