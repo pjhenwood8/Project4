@@ -8,7 +8,17 @@ import java.io.FileNotFoundException;
 import java.io.*;
 import java.util.*;
 
-public class Buyer extends User{
+/**
+ * Buyer class
+ * This class extends the user class giving it the permissions that come with being a buyer.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood
+ *
+ * @version November 15, 2022
+ *
+ */
+
+public class Buyer extends User {
     public Buyer (String username, String email, String password) {
         super(username, email, password);
     }
