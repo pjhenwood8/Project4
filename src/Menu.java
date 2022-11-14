@@ -963,7 +963,7 @@ public static User login(Scanner scanner) {
         ArrayList<String> tempArrayList = new ArrayList<>();
         String[] tempArray;
         ArrayList<String> transferList;
-        boolean invEmail = true;
+        boolean invEmail;
         String email, pass;
         //Add users from file to arraylist
         try {
@@ -990,6 +990,7 @@ public static User login(Scanner scanner) {
             email = scanner.nextLine();
             System.out.println("Please enter you password:");
             pass = scanner.nextLine();
+            invEmail = true;
             for (String[] user : users) {
                 if (email.equals(user[1])) {
                     invEmail = false;
