@@ -5,6 +5,7 @@ After starting the program, the follow-ups and tips will be shown to user,
 which will guide him on how to use the program
 
 PJ Henwood was responsible for submitting the report on the project on BrightSpace
+
 Alimzhan Sultanov was responsible for submitting the code
 
 Menu.java is main class of the project. There you will be able to log in with existing account, create
