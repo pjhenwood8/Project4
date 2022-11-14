@@ -1,3 +1,4 @@
+import java.util.Scanner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -123,19 +124,6 @@ public class RunLocalTest {
             assertTrue(user1.unblockUser("a", user1.getBlockedUsers()));
             assertFalse(user1.unblockUser("c", user1.getBlockedUsers()));
         }
-
-        @Test(timeout = 1000)
-        public void testParseStoreMessages() {
-            Menu menu = new Menu();
-            User user = new User("username","email","pass");
-            ArrayList<Message> messages = new ArrayList<>();
-            messages.add(new Message("sender1","receiver","Test1"));
-            messages.add(new Message("sender2","receiver","Test2"));
-            user.setMessages(messages);
-            ArrayList<Message> expected = new ArrayList<>();
-            expected.add(new Message("sender1","receiver","Test1"));
-            assertEquals(expected.toString(), menu.parseStoreMessages(user,"sender1").toString());
-        }
         
             @Test(timeout = 1000)
         public void testParseUsers(){
@@ -229,50 +217,6 @@ public class RunLocalTest {
         }
 
         @Test(timeout = 1000)
-        public void testReadStores() {
-            ArrayList<User> users = new ArrayList<>();
-            users.add(new User("buyer1", "buyer1@gmail.com", "pass1"));
-            users.add(new User("buyer2", "buyer2@gmail.com", "pass2"));
-            Menu menu = new Menu();
-            ArrayList<Buyer> buyers = new ArrayList<>();
-            ArrayList<Store> expectedStore = new ArrayList<>();
-            expectedStore.add(new Store("storeName", 0, buyers));
-            File testFile = new File("testFile.csv");
-            try {
-                PrintWriter pw = new PrintWriter(new FileOutputStream(testFile, false));
-                pw.println("\"storeName\",\"0\",\"\"");
-                pw.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            try {
-                assertEquals(expectedStore.get(0).getStoreName(), menu.readStores("testFile.csv", users).get(0).getStoreName());
-            } catch (IOException e) {
-                System.out.println("readStores method failed");
-            }
-        }
-        @Test
-        public void testReadUsers() {
-            Menu menu = new Menu();
-            ArrayList<User> users = new ArrayList<>();
-            users.add(new Buyer("buyer1", "buyer1@gmail.com", "pass1"));
-            users.add(new Buyer("buyer2", "buyer2@gmail.com", "pass2"));
-            File testFile = new File("testFile.csv");
-            try {
-                PrintWriter pw = new PrintWriter(new FileOutputStream(testFile, false));
-                pw.println("\"buyer1\",\"buyer1@gmail.com\",\"pass1\",\"b\",\"\"");
-                pw.println("\"buyer2\",\"buyer2@gmail.com\",\"pass2\",\"b\",\"\"");
-                pw.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            try {
-                assertEquals(users.get(0).getEmail(), menu.readUsers("testFile.csv").get(0).getEmail());
-            } catch (IOException e) {
-                System.out.println("readStores method failed");
-            }
-        }
-        @Test(timeout = 1000)
         public void testParseStoreMessages() {
             Menu menu = new Menu();
             User user = new User("username","email","pass");
@@ -311,7 +255,7 @@ public class RunLocalTest {
             } catch (AssertionError e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                System.out.println("readStores method failed");
+                e.printStackTrace();
             }
         }
         @Test
