@@ -70,7 +70,7 @@ public class User {
         this.messages = messages;
     }
 
-    private ArrayList<Message> parseMessages() throws IOException {
+    ArrayList<Message> parseMessages() throws IOException {
         ArrayList<Message> wholeFile = readWholeFile();
 
         ArrayList<Message> temp = new ArrayList<>();
@@ -82,7 +82,7 @@ public class User {
         return temp;
     }
 
-    private ArrayList<Message> readWholeFile() throws IOException {
+    ArrayList<Message> readWholeFile() throws IOException {
         ArrayList<Message> fileContent = new ArrayList<>();
         BufferedReader bfr = new BufferedReader(new FileReader("messages.csv"));
         String st;
