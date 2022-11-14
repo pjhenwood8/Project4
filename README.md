@@ -4,8 +4,8 @@ In order to run the project code, you need to run the main method in the Menu.ja
 After starting the program, the follow-ups and tips will be shown to user, 
 which will guide him on how to use the program
 
-Student 1 was responsible for submitting the report on the project on BrightSpace
-Student 2 was responsible for submitting the code or whatever it is//edit later
+PJ Henwood was responsible for submitting the report on the project on BrightSpace
+Alimzhan Sultanov was responsible for submitting the code or whatever it is//edit later
 
 Menu.java is main class of the project. There you will be able to log in with existing account, create
 a new account, delete accounts. Once you logged in, you will be able to write messages, edit them, delete them,
