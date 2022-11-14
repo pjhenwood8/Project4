@@ -161,4 +161,8 @@ public class User {
     public ArrayList<User> getBlockedUsers() {
         return blockedUsers;
     }
+
+    public void viewStatistics(boolean alphabetical) {
+
+    }
 }

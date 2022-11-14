@@ -1,4 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Buyer extends User{
     public Buyer (String username, String email, String password) {
@@ -44,7 +49,7 @@ public class Buyer extends User{
                 line = messages.get(j);
                 String user = line.substring(line.indexOf(',', line.indexOf(',')));
                 store = line.substring(0, line.indexOf(','));
-                if (user.equals(username) && store.equals(stores.get(i))) {
+                if (user.equals(this.getUsername()) && store.equals(stores.get(i))) {
                     counter++;
                 }
             }
