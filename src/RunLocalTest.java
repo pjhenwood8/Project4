@@ -272,9 +272,116 @@ public class RunLocalTest {
                 System.out.println("readStores method failed");
             }
         }
-        @Test
-        public void testCreateAccount(){
+        @Test(timeout = 1000)
+        public void testParseStoreMessages() {
+            Menu menu = new Menu();
+            User user = new User("username","email","pass");
+            ArrayList<Message> messages = new ArrayList<>();
+            messages.add(new Message("sender1","receiver","Test1"));
+            messages.add(new Message("sender2","receiver","Test2"));
+            user.setMessages(messages);
+            ArrayList<Message> expected = new ArrayList<>();
+            expected.add(new Message("sender1","receiver","Test1"));
+            try {
+                assertEquals(expected.toString(), menu.parseStoreMessages(user, "sender1").toString());
+            } catch (AssertionError e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Test(timeout = 1000)
+        public void testReadStores() {
+            ArrayList<User> users = new ArrayList<>();
+            users.add(new User("buyer1", "buyer1@gmail.com", "pass1"));
+            users.add(new User("buyer2", "buyer2@gmail.com", "pass2"));
+            Menu menu = new Menu();
+            ArrayList<Buyer> buyers = new ArrayList<>();
+            ArrayList<Store> expectedStore = new ArrayList<>();
+            expectedStore.add(new Store("storeName", 0, buyers));
+            File testFile = new File("test.csv");
+            try {
+                PrintWriter pw = new PrintWriter(new FileOutputStream(testFile, false));
+                pw.println("\"storeName\",\"0\",\"\"");
+                pw.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                assertEquals(expectedStore.get(0).getStoreName(), menu.readStores("test.csv", users).get(0).getStoreName());
+            } catch (AssertionError e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("readStores method failed");
+            }
+        }
+        @Test
+        public void testReadUsers() {
+            Menu menu = new Menu();
+            ArrayList<User> users = new ArrayList<>();
+            users.add(new Buyer("buyer1", "buyer1@gmail.com", "pass1"));
+            users.add(new Buyer("buyer2", "buyer2@gmail.com", "pass2"));
+            File testFile = new File("test.csv");
+            try {
+                PrintWriter pw = new PrintWriter(new FileOutputStream(testFile, false));
+                pw.println("\"buyer1\",\"buyer1@gmail.com\",\"pass1\",\"b\",\"\"");
+                pw.println("\"buyer2\",\"buyer2@gmail.com\",\"pass2\",\"b\",\"\"");
+                pw.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                assertEquals(users.get(0).getEmail(), menu.readUsers("test.csv").get(0).getEmail());
+            } catch(IOException e) {
+                e.printStackTrace();
+            } catch (AssertionError e) {
+                e.printStackTrace();
+            }
+        }
+        @Test
+        public void testCreateAccount() {
+            Scanner testScannner = new Scanner("pj1@gmail.com" + System.lineSeparator() + "PJ1" + System.lineSeparator() + "stark" + System.lineSeparator() + "buyer" + System.lineSeparator()
+                    + "pj2@gmail.com" + System.lineSeparator() + "PJ2" + System.lineSeparator() + "stark" + System.lineSeparator() + "buyer" + System.lineSeparator()
+                    + "pj3@gmail.com" + System.lineSeparator() + "PJ3" + System.lineSeparator() + "stark" + System.lineSeparator() + "buyer" + System.lineSeparator()
+                    + "pj4@gmail.com" + System.lineSeparator() + "PJ4" + System.lineSeparator() + "stark" + System.lineSeparator() + "buyer" + System.lineSeparator()
+                    + "pj5@gmail.com" + System.lineSeparator() + "PJ5" + System.lineSeparator() + "stark" + System.lineSeparator() + "buyer" + System.lineSeparator()
+                    + "pj6@gmail.com" + System.lineSeparator() + "PJ6" + System.lineSeparator() + "stark" + System.lineSeparator() + "buyer" + System.lineSeparator());
+            File testFile = new File("test.csv");
+            try {
+                assertEquals(new Buyer("PJ1","pj1@gmail.com","stark").getEmail(), Menu.createAccount(testScannner,"test.csv").getEmail());
+                assertEquals(new Buyer("PJ2","pj2@gmail.com","stark").getMessages(), Menu.createAccount(testScannner,"test.csv").getMessages());
+                assertEquals(new Buyer("PJ3","pj3@gmail.com","stark").getPassword(), Menu.createAccount(testScannner,"test.csv").getPassword());
+                assertEquals(new Buyer("PJ4","pj4@gmail.com","fire").getBlockedUsers(), Menu.createAccount(testScannner,"test.csv").getBlockedUsers());
+                assertEquals(new Buyer("PJ5","pj5@gmail.com","fire").getBlockedUsernames(), Menu.createAccount(testScannner,"test.csv").getBlockedUsernames());
+                assertEquals(new Buyer("PJ6","pj6@gmail.com","fire").getClass(), Menu.createAccount(testScannner,"test.csv").getClass());
+            } catch(AssertionError e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Test
+        public void testLogin() {
+            Scanner testScannner = new Scanner("pj@gmail.com" + System.lineSeparator() + "fire" + System.lineSeparator()
+                                                    + "pj@gmail.com" + System.lineSeparator() + "fire" + System.lineSeparator()
+                                                    + "pj@gmail.com" + System.lineSeparator() + "fire" + System.lineSeparator()
+                                                    + "pj@gmail.com" + System.lineSeparator() + "fire" + System.lineSeparator()
+                                                    + "pj@gmail.com" + System.lineSeparator() + "fire" + System.lineSeparator());
+            File testFile = new File("test.csv");
+            try {
+                PrintWriter pw = new PrintWriter(new FileOutputStream(testFile, false));
+                pw.println("\"PJ\",\"pj@gmail.com\",\"fire\",\"s\",\"\",\"\"");
+                pw.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getEmail(),Menu.login(testScannner,"test.csv").getEmail());
+                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getMessages(),Menu.login(testScannner,"test.csv").getMessages());
+                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getPassword(),Menu.login(testScannner,"test.csv").getPassword());
+                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getBlockedUsers(),Menu.login(testScannner,"test.csv").getBlockedUsers());
+                assertEquals(new Seller("PJ","pj@gmail.com","fire",new ArrayList<String>()).getBlockedUsernames(),Menu.login(testScannner,"test.csv").getBlockedUsernames());
+            } catch(AssertionError e) {
+                e.printStackTrace();
+            }
         }
     }
 }
