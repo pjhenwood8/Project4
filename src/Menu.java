@@ -1,10 +1,5 @@
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.*;
-import java.util.Scanner;
 
 public class Menu {
     public static void main(String[] args) throws IOException {
@@ -116,22 +111,20 @@ public class Menu {
                                                 temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
                                                 user.setMessages(temp);
                                                 messageHistory = parseMessageHistory(user, newUser);
-                                                for (int i = 0; i < messageHistory.size(); i++) {
-                                                    System.out.print(messageHistory.get(i).toString());                     //we print their message history
+                                                for (Message message : messageHistory) {
+                                                    System.out.print(message.toString());                     //we print their message history
                                                 }
                                             }
                                         } else {
                                             while (true) {
                                                 messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                                                for (int i = 0; i < messageHistory.size(); i++) {
-                                                    if (messageHistory.get(i).getMessage().contains("\\n")) {
-                                                        Message temp = messageHistory.get(i);
-                                                        String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
-                                                        String ans = String.format("%s   (%s -> %s)%n%s%n", temp.getTime(), temp.getSender(), temp.getReceiver(), ansMes);
+                                                for (Message value : messageHistory) {
+                                                    if (value.getMessage().contains("\\n")) {
+                                                        String ansMes = value.getMessage().replaceAll("\\\\n", "\n");
+                                                        String ans = String.format("%s   (%s -> %s)%n%s%n", value.getTime(), value.getSender(), value.getReceiver(), ansMes);
                                                         System.out.print(ans);
-                                                    }
-                                                    else
-                                                        System.out.print(messageHistory.get(i).toString());
+                                                    } else
+                                                        System.out.print(value);
                                                 }
                                                 System.out.println();
                                                 System.out.println("[1] Write message                         [2] Edit message");
@@ -141,9 +134,8 @@ public class Menu {
                                                 if (optionChoice == -1) {
                                                     System.out.println("Enter name of the file to which you want to export your message history");
                                                     String fileName = scanner.nextLine();
-                                                    PrintWriter pw = new PrintWriter(new FileOutputStream(new File(fileName),false));
-                                                    for (int i = 0; i < messageHistory.size(); i++) {
-                                                        Message msg = messageHistory.get(i);
+                                                    PrintWriter pw = new PrintWriter(new FileOutputStream(fileName,false));
+                                                    for (Message msg : messageHistory) {
                                                         String ans = String.format("\"%d\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", msg.getId(), msg.getTime(), msg.getSender(), msg.getReceiver(), msg.getMessage(), msg.isDelBySender(), msg.isDelByReceiver());
                                                         pw.write(ans);
                                                         pw.println();
@@ -166,7 +158,7 @@ public class Menu {
                                                         String fileName = scanner.nextLine();
                                                         String mes = "";
                                                         try {
-                                                            BufferedReader bfr = new BufferedReader(new FileReader(new File(fileName)));
+                                                            BufferedReader bfr = new BufferedReader(new FileReader(fileName));
                                                             String st;
                                                             while ((st = bfr.readLine()) != null) {
                                                                 mes += st + "\n";
@@ -196,9 +188,9 @@ public class Menu {
                                                     System.out.println("To which message you want to change it?");
                                                     String msg = scanner.nextLine();
                                                     Message temp = userIsSender.get(choice - 1);
-                                                    for (int j = 0; j < messageHistory.size(); j++) {
-                                                        if (messageHistory.get(j).getId() == temp.getId()) {
-                                                            messageHistory.get(j).setMessage(msg);
+                                                    for (Message message : messageHistory) {
+                                                        if (message.getId() == temp.getId()) {
+                                                            message.setMessage(msg);
                                                         }
                                                     }
                                                 }
@@ -228,7 +220,6 @@ public class Menu {
                                                     user.refreshMessages();
                                                 }
                                                 if (optionChoice == 0) {
-                                                    //insideMessageHistory = false;
                                                     break;
                                                 }
                                             }
@@ -251,25 +242,25 @@ public class Menu {
                                         }
                                         System.out.println("Enter name of the store");
                                         String store = scanner.nextLine();
-                                        for (int i = 0; i < users.size(); i++) {
-                                            if (users.get(i) instanceof Seller) {
-                                                for (int j = 0; j < ((Seller) users.get(i)).getStores().size(); j++) {
-                                                    if (((Seller) users.get(i)).getStores().get(j).equals(store)) {
+                                        for (User value : users) {
+                                            if (value instanceof Seller) {
+                                                for (int j = 0; j < ((Seller) value).getStores().size(); j++) {
+                                                    if (((Seller) value).getStores().get(j).equals(store)) {
                                                         System.out.println("Enter message you want to send to that store");
                                                         String msg = scanner.nextLine();
                                                         ArrayList<Message> temp = currUser.getMessages();
-                                                        temp.add(new Message(currUser.getUsername(), users.get(i).getUsername(), msg));              // We should check if user exists in the future
+                                                        temp.add(new Message(currUser.getUsername(), value.getUsername(), msg));              // We should check if user exists in the future
                                                         user.setMessages(temp);
-                                                        System.out.println("Store manager's username is "+users.get(i).getUsername());
+                                                        System.out.println("Store manager's username is " + value.getUsername());
                                                         System.out.println("Please wait for his message");
-                                                        for (Store s : ((Seller) users.get(i)).getNewStores()) {
+                                                        for (Store s : ((Seller) value).getNewStores()) {
                                                             if (s.getStoreName().equalsIgnoreCase(store)) {
                                                                 s.addMessagesReceived();
                                                                 if (!s.getUserMessaged().contains(currUser)) {
                                                                     s.addUserMessaged((Buyer) currUser);
                                                                 }
                                                                 for (Store st : stores) {
-                                                                    if(s.getStoreName().equalsIgnoreCase(st.getStoreName())){
+                                                                    if (s.getStoreName().equalsIgnoreCase(st.getStoreName())) {
                                                                         st.addMessagesReceived();
                                                                         if (!st.getUserMessaged().contains(currUser)) {
                                                                             st.addUserMessaged((Buyer) currUser);
@@ -280,15 +271,14 @@ public class Menu {
                                                                 writeStores("stores.csv", stores);
                                                             }
                                                         }
-                                                        ArrayList<Message> messageHistory = parseMessageHistory(user, users.get(i).getUsername());
-                                                        for (int k = 0; k < messageHistory.size(); k++) {
-                                                            if (messageHistory.get(k).getMessage().contains("\\n")) {
-                                                                Message tempMes = messageHistory.get(k);
-                                                                String ansMes = messageHistory.get(k).getMessage().replaceAll("\\\\n", "\n");
-                                                                String ans = String.format("%s   (%s -> %s)%n%s%n", tempMes.getTime(), tempMes.getSender(), tempMes.getReceiver(), ansMes);
+                                                        ArrayList<Message> messageHistory = parseMessageHistory(user, value.getUsername());
+                                                        for (Message message : messageHistory) {
+                                                            if (message.getMessage().contains("\\n")) {
+                                                                String ansMes = message.getMessage().replaceAll("\\\\n", "\n");
+                                                                String ans = String.format("%s   (%s -> %s)%n%s%n", message.getTime(), message.getSender(), message.getReceiver(), ansMes);
                                                                 System.out.print(ans);
                                                             } else {
-                                                                System.out.print(messageHistory.get(k).toString());
+                                                                System.out.print(message.toString());
                                                             }
                                                         }
                                                     } else {
@@ -344,30 +334,26 @@ public class Menu {
                                                     ArrayList<Message> temp = user.getMessages();
                                                     temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
                                                     user.setMessages(temp);
-                                                    messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                                                    for (int i = 0; i < messageHistory.size(); i++) {
-                                                        if (messageHistory.get(i).getMessage().contains("\\n")) {
-                                                            Message tempMes = messageHistory.get(i);
-                                                            String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
-                                                            String ans = String.format("%s   (%s -> %s)%n%s%n", tempMes.getTime(), tempMes.getSender(), tempMes.getReceiver(), ansMes);
+                                                    messageHistory = parseMessageHistory(user, newUser);
+                                                    for (Message message : messageHistory) {
+                                                        if (message.getMessage().contains("\\n")) {
+                                                            String ansMes = message.getMessage().replaceAll("\\\\n", "\n");
+                                                            String ans = String.format("%s   (%s -> %s)%n%s%n", message.getTime(), message.getSender(), message.getReceiver(), ansMes);
                                                             System.out.print(ans);
-                                                        }
-                                                        else
-                                                            System.out.print(messageHistory.get(i).toString());
+                                                        } else
+                                                            System.out.print(message.toString());
                                                     }
                                                 }
-                                            } else {
+                                            } else if (receiveUser > 1) {
                                                 while (true) {
                                                     messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                                                    for (int i = 0; i < messageHistory.size(); i++) {
-                                                        if (messageHistory.get(i).getMessage().contains("\\n")) {
-                                                            Message temp = messageHistory.get(i);
-                                                            String ansMes = messageHistory.get(i).getMessage().replaceAll("\\\\n", "\n");
-                                                            String ans = String.format("%s   (%s -> %s)%n%s%n", temp.getTime(), temp.getSender(), temp.getReceiver(), ansMes);
+                                                    for (Message message : messageHistory) {
+                                                        if (message.getMessage().contains("\\n")) {
+                                                            String ansMes = message.getMessage().replaceAll("\\\\n", "\n");
+                                                            String ans = String.format("%s   (%s -> %s)%n%s%n", message.getTime(), message.getSender(), message.getReceiver(), ansMes);
                                                             System.out.print(ans);
-                                                        }
-                                                        else
-                                                            System.out.print(messageHistory.get(i).toString());
+                                                        } else
+                                                            System.out.print(message);
                                                     }
                                                     System.out.println();
                                                     System.out.println("[1] Write message                         [2] Edit message");
@@ -377,9 +363,8 @@ public class Menu {
                                                     if (optionChoice == -1) {
                                                         System.out.println("Enter name of the file to which you want to export your message history");
                                                         String fileName = scanner.nextLine();
-                                                        PrintWriter pw = new PrintWriter(new FileOutputStream(new File(fileName),false));
-                                                        for (int i = 0; i < messageHistory.size(); i++) {
-                                                            Message msg = messageHistory.get(i);
+                                                        PrintWriter pw = new PrintWriter(new FileOutputStream(fileName,false));
+                                                        for (Message msg : messageHistory) {
                                                             String ans = String.format("\"%d\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", msg.getId(), msg.getTime(), msg.getSender(), msg.getReceiver(), msg.getMessage(), msg.isDelBySender(), msg.isDelByReceiver());
                                                             pw.write(ans);
                                                             pw.println();
@@ -403,7 +388,7 @@ public class Menu {
                                                             String fileName = scanner.nextLine();
                                                             String mes = "";
                                                             try {
-                                                                BufferedReader bfr = new BufferedReader(new FileReader(new File(fileName)));
+                                                                BufferedReader bfr = new BufferedReader(new FileReader(fileName));
                                                                 String st;
                                                                 while ((st = bfr.readLine()) != null) {
                                                                     mes += st + "\\n";
@@ -434,9 +419,9 @@ public class Menu {
                                                         System.out.println("To which message you want to change it?");
                                                         String msg = scanner.nextLine();
                                                         Message temp = userIsSender.get(choice - 1);
-                                                        for (int j = 0; j < messageHistory.size(); j++) {
-                                                            if (messageHistory.get(j).getId() == temp.getId()) {
-                                                                messageHistory.get(j).setMessage(msg);
+                                                        for (Message message : messageHistory) {
+                                                            if (message.getId() == temp.getId()) {
+                                                                message.setMessage(msg);
                                                             }
                                                         }
                                                     }
@@ -466,10 +451,11 @@ public class Menu {
                                                         user.refreshMessages();
                                                     }
                                                     if (optionChoice == 0) {
-                                                        //insideMessageHistory = false;
                                                         break;
                                                     }
                                                 }
+                                            } else {
+                                                System.out.println("Please enter a valid number");
                                             }
                                         }
                                         saveMessages(user);
@@ -484,41 +470,15 @@ public class Menu {
                                     int alphabetical = Integer.parseInt(scanner.nextLine());
                                     if (currUser instanceof Buyer) {
                                         if (alphabetical == 1)
-                                            ((Buyer) currUser).viewStatistics(true);
+                                            currUser.viewStatistics(true);
                                         else if (alphabetical == 2)
-                                            ((Buyer) currUser).viewStatistics(false);
-                                        else if (alphabetical == 0)
-                                            break;
-                                    } else if (currUser instanceof Seller) {
-                                        Map<String, Integer> sentMessages = new HashMap<>();
-                                        int i = 0;
-                                        for (User u : users) {
-                                            int count = 0;
-                                            ArrayList<Message> messages = new ArrayList<>();
-                                            if (!u.equals(currUser) && u instanceof Buyer) {
-                                                 messages = parseStoreMessages(currUser, u.getUsername());
-                                                count = messages.size();
-                                                sentMessages.put(u.getUsername(), count);
-                                            }
-                                        }
-                                        ArrayList<String> sortedSentMessages = new ArrayList<String>(sentMessages.keySet());
-                                        Collections.sort(sortedSentMessages);
-                                        if (alphabetical == 1) {
-                                            for (String s : sortedSentMessages) {
-                                                System.out.printf("%s sent %d messages%n", s, sentMessages.get(s));
-                                            }
-                                        } else if (alphabetical == 2) {
-                                            for (int j = sortedSentMessages.size() - 1; j >= 0; j--) {
-                                                System.out.printf("%s sent %d messages%n", sortedSentMessages.get(j), sentMessages.get(sortedSentMessages.get(j)));
-                                            }
-                                        } else if (alphabetical == 0) {
-                                            break;
-                                        } else if (alphabetical == 3) {
+                                            currUser.viewStatistics(false);
+                                        else if (alphabetical == 3) {
                                             ArrayList<Message> allMessages = new ArrayList<>();
                                             String word = "";
                                             String secondWord = "";
                                             String thirdWord = "";
-                                            int count = 0;
+                                            int count;
                                             int maxCount = 0;
                                             int secondCount = 0;
                                             int thirdCount = 0;
@@ -540,18 +500,162 @@ public class Menu {
                                                     }
 
                                                 }
-                                                if (count >= maxCount) {
-                                                    thirdCount = secondCount;
-                                                    secondCount = maxCount;
+                                                if (count > maxCount) {
                                                     maxCount = count;
-                                                    thirdWord = secondWord;
-                                                    secondWord = word;
                                                     word = wordArr[k];
+                                                }
+                                            }
+                                            String[] newWordArr = new String[wordArr.length - maxCount];
+                                            int i = 0;
+                                            for (String s : wordArr) {
+                                                if (!s.equals(word)) {
+                                                    newWordArr[i] = s;
+                                                    i++;
+                                                }
+                                            }
+                                            for (int k = 0; k < newWordArr.length; k++) {
+                                                count = 1;
+                                                for (int l = k + 1; l < newWordArr.length; l++) {
+                                                    if (newWordArr[k].equals(newWordArr[l])) {
+                                                        count++;
+                                                    }
+
+                                                }
+                                                if (count > secondCount) {
+                                                    secondWord = newWordArr[k];
+                                                    secondCount = count;
+                                                    //word = wordArr[k];
+                                                }
+                                            }
+                                            String[] new2WordArr = new String[newWordArr.length - secondCount];
+                                            i = 0;
+                                            for (String s : newWordArr) {
+                                                if (!s.equals(secondWord)) {
+                                                    new2WordArr[i] = s;
+                                                    i++;
+                                                }
+                                            }
+                                            for (int k = 0; k < new2WordArr.length; k++) {
+                                                count = 1;
+                                                for (int l = k + 1; l < new2WordArr.length; l++) {
+                                                    if (new2WordArr[k].equals(new2WordArr[l])) {
+                                                        count++;
+                                                    }
+
+                                                }
+                                                if (count > thirdCount) {
+                                                    thirdCount = count;
+                                                    thirdWord = new2WordArr[k];
                                                 }
                                             }
                                             System.out.println("The most common word in Messages is " + word + " said " + maxCount + " times");
                                             System.out.println("The second common word in Messages is " + secondWord + " said " + secondCount + " times");
                                             System.out.println("The third most common word in Messages is " + thirdWord + " said " + thirdCount + " times");
+                                            System.out.println();
+                                        } else if (alphabetical == 0)
+                                            break;
+                                    } else if (currUser instanceof Seller) {
+                                        Map<String, Integer> sentMessages = new HashMap<>();
+                                        for (User u : users) {
+                                            int count;
+                                            ArrayList<Message> messages;
+                                            if (!u.equals(currUser) && u instanceof Buyer) {
+                                                 messages = parseStoreMessages(currUser, u.getUsername());
+                                                count = messages.size();
+                                                sentMessages.put(u.getUsername(), count);
+                                            }
+                                        }
+                                        ArrayList<String> sortedSentMessages = new ArrayList<>(sentMessages.keySet());
+                                        Collections.sort(sortedSentMessages);
+                                        if (alphabetical == 1) {
+                                            for (String s : sortedSentMessages) {
+                                                System.out.printf("%s sent %d messages%n", s, sentMessages.get(s));
+                                            }
+                                        } else if (alphabetical == 2) {
+                                            for (int j = sortedSentMessages.size() - 1; j >= 0; j--) {
+                                                System.out.printf("%s sent %d messages%n", sortedSentMessages.get(j), sentMessages.get(sortedSentMessages.get(j)));
+                                            }
+                                        } else if (alphabetical == 0) {
+                                            break;
+                                        } else if (alphabetical == 3) {
+                                            ArrayList<Message> allMessages = new ArrayList<>();
+                                            String word = "";
+                                            String secondWord = "";
+                                            String thirdWord = "";
+                                            int count;
+                                            int maxCount = 0;
+                                            int secondCount = 0;
+                                            int thirdCount = 0;
+                                            for (User u1 : users) {
+                                                if (u1 != currUser) {
+                                                    allMessages.addAll(parseMessageHistory(currUser, u1.getUsername()));
+                                                }
+                                            }
+                                            String message = "";
+                                            for (Message m : allMessages) {
+                                                message += m.getMessage() + " ";
+                                            }
+                                            String[] wordArr = message.split(" ");
+                                            for (int k = 0; k < wordArr.length; k++) {
+                                                count = 1;
+                                                for (int l = k + 1; l < wordArr.length; l++) {
+                                                    if (wordArr[k].equals(wordArr[l])) {
+                                                        count++;
+                                                    }
+
+                                                }
+                                                if (count > maxCount) {
+                                                    maxCount = count;
+                                                    word = wordArr[k];
+                                                }
+                                            }
+                                            String[] newWordArr = new String[wordArr.length - maxCount];
+                                            int i = 0;
+                                            for (String s : wordArr) {
+                                                if (!s.equals(word)) {
+                                                    newWordArr[i] = s;
+                                                    i++;
+                                                }
+                                            }
+                                            for (int k = 0; k < newWordArr.length; k++) {
+                                                count = 1;
+                                                for (int l = k + 1; l < newWordArr.length; l++) {
+                                                    if (newWordArr[k].equals(newWordArr[l])) {
+                                                        count++;
+                                                    }
+
+                                                }
+                                                if (count > secondCount) {
+                                                    secondWord = newWordArr[k];
+                                                    secondCount = count;
+                                                    //word = wordArr[k];
+                                                }
+                                            }
+                                            String[] new2WordArr = new String[newWordArr.length - secondCount];
+                                            i = 0;
+                                            for (String s : newWordArr) {
+                                                if (!s.equals(secondWord)) {
+                                                    new2WordArr[i] = s;
+                                                    i++;
+                                                }
+                                            }
+                                            for (int k = 0; k < new2WordArr.length; k++) {
+                                                count = 1;
+                                                for (int l = k + 1; l < new2WordArr.length; l++) {
+                                                    if (new2WordArr[k].equals(new2WordArr[l])) {
+                                                        count++;
+                                                    }
+
+                                                }
+                                                if (count > thirdCount) {
+                                                    thirdCount = count;
+                                                    thirdWord = new2WordArr[k];
+                                                }
+                                            }
+                                            System.out.println("The most common word in Messages is " + word + " said " + maxCount + " times");
+                                            System.out.println("The second common word in Messages is " + secondWord + " said " + secondCount + " times");
+                                            System.out.println("The third most common word in Messages is " + thirdWord + " said " + thirdCount + " times");
+                                            System.out.println();
                                         }
                                     }
 
@@ -688,28 +792,18 @@ public class Menu {
             writeUsers("login.csv", users);
             writeStores("stores.csv", stores);
         }
-
-        //store.csv test
-        /*ArrayList<User> users = readUsers("login.csv");
-        ArrayList<Store> stores = readStores("stores.csv", users);
-        ArrayList<Buyer> buyers = new ArrayList<>();
-        Buyer exBuyer = new Buyer("exBuyer", "ebuyer@purdue.edu", "9876");
-        buyers.add(exBuyer);
-        stores.add(new Store("Nike", 34, buyers));
-        writeStores("stores.csv", stores);*/
     }
 
     public static String[] parseUsers(User user) {
         ArrayList<Message> messages = user.getMessages();
         ArrayList<String> temp = new ArrayList<>();
-        for (int i = 0; i < messages.size(); i++) {
-            if (messages.get(i).getSender().equals(user.getUsername())) {
-                if (!temp.contains(messages.get(i).getReceiver()))
-                    temp.add(messages.get(i).getReceiver());
-            }
-            else {
-                if (!temp.contains(messages.get(i).getSender()))
-                    temp.add(messages.get(i).getSender());
+        for (Message message : messages) {
+            if (message.getSender().equals(user.getUsername())) {
+                if (!temp.contains(message.getReceiver()))
+                    temp.add(message.getReceiver());
+            } else {
+                if (!temp.contains(message.getSender()))
+                    temp.add(message.getSender());
             }
         }
         String[] answer = new String[temp.size()];
@@ -722,9 +816,9 @@ public class Menu {
     public static ArrayList<Message> parseMessageHistory(User mainClient, String thirdParty) {
         ArrayList<Message> messages = mainClient.getMessages();
         ArrayList<Message> temp = new ArrayList<>();
-        for (int i = 0; i < messages.size(); i++) {
-            if (messages.get(i).getSender().equals(thirdParty) || messages.get(i).getReceiver().equals(thirdParty)) {
-                temp.add(messages.get(i));
+        for (Message message : messages) {
+            if (message.getSender().equals(thirdParty) || message.getReceiver().equals(thirdParty)) {
+                temp.add(message);
             }
         }
         return temp;
@@ -790,7 +884,7 @@ public class Menu {
     {
         ArrayList<String> words = new ArrayList<>();
         boolean notInsideComma = true;
-        int start =0, end=0;
+        int start =0;
         for(int i=0; i<s.length()-1; i++)
         {
             if(s.charAt(i)==',' && notInsideComma)
@@ -854,11 +948,11 @@ public static User login(Scanner scanner) {
                 tempArrayList.add(line);
                 line = bfr.readLine();
             }
-            for(int i = 0; i < tempArrayList.size(); i++) {
-                transferList = customSplitSpecific(tempArrayList.get(i));
+            for (String s : tempArrayList) {
+                transferList = customSplitSpecific(s);
                 tempArray = new String[transferList.size()];
-                for(int j = 0; j < tempArray.length; j++) {
-                     tempArray[j] = transferList.get(j);
+                for (int j = 0; j < tempArray.length; j++) {
+                    tempArray[j] = transferList.get(j);
                 }
                 users.add(tempArray);
             }
@@ -922,10 +1016,10 @@ public static User login(Scanner scanner) {
                 tempArrayList.add(line);
                 line = bfr.readLine();
             }
-            for(int i = 0; i < tempArrayList.size(); i++) {
-                transferList = customSplitSpecific(tempArrayList.get(i));
+            for (String s : tempArrayList) {
+                transferList = customSplitSpecific(s);
                 tempArray = new String[transferList.size()];
-                for(int j = 0; j < tempArray.length; j++) {
+                for (int j = 0; j < tempArray.length; j++) {
                     tempArray[j] = transferList.get(j);
                 }
                 userFile.add(tempArray);
@@ -938,7 +1032,7 @@ public static User login(Scanner scanner) {
         while(invEmail) {
             System.out.print("Please enter a valid email: ");
             email = scanner.nextLine();
-            if (email.contains(",") || (!(email.contains("@"))) || email == null || email.equals("")) {
+            if (email.contains(",") || !email.contains("@")) {
                 System.out.println("That email is not valid");
             } else {
                 invEmail = false;
@@ -948,10 +1042,10 @@ public static User login(Scanner scanner) {
         while(invUsername){
             System.out.print("Please enter a valid username: ");
             userName = scanner.nextLine();
-            if (userName.contains(",") || userName == null || userName.equals("")) {
+            if (userName.contains(",") || userName.equals("")) {
                 System.out.println("That user name was not valid");
-                for(int i = 0; i < userFile.size(); i++) {
-                    if(userName.equals(userFile.get(i)[0])) {
+                for (String[] strings : userFile) {
+                    if (userName.equals(strings[0])) {
                         System.out.println("Someone else has that username please try a different one");
                         repeatUser = true;
                     }
@@ -991,8 +1085,8 @@ public static User login(Scanner scanner) {
         }
         try {
             PrintWriter pw = new PrintWriter(new FileOutputStream("login.csv", false));
-            for (int i = 0; i < userFile.size(); i++) {
-                pw.println("\"" + userFile.get(i)[0] + "\"" + "," + "\"" + userFile.get(i)[1] + "\"" + "," + "\"" + userFile.get(i)[2] + "\"" + "," + "\"" + userFile.get(i)[3] + "\"" + "," + userFile.get(i)[4]);
+            for (String[] strings : userFile) {
+                pw.println("\"" + strings[0] + "\"" + "," + "\"" + strings[1] + "\"" + "," + "\"" + strings[2] + "\"" + "," + "\"" + strings[3] + "\"" + "," + strings[4]);
             }
             pw.println("\"" + userName + "\"" + "," + "\"" + email + "\"" + "," + "\"" + pass + "\"" + "," + "\"" +userType + "\"" + ",\"\"");
             pw.close();
@@ -1139,7 +1233,6 @@ public static User login(Scanner scanner) {
             for (Store s : stores) {
                 pw.print("\"" + s.getStoreName() + "\",\"" + s.getMessagesReceived() + "\",\"");
                 if (s.getUserMessaged().size() > 0) {
-                    //ArrayList<User> blockedUsers = u.getBlockedUsers();
                     ArrayList<String> userMessaged = new ArrayList<>();
                     for (Buyer b : s.getUserMessaged()) {
                         userMessaged.add(b.getUsername());
@@ -1164,9 +1257,9 @@ public static User login(Scanner scanner) {
     public static ArrayList<Message> parseStoreMessages(User mainClient, String thirdParty) {
         ArrayList<Message> messages = mainClient.getMessages();
         ArrayList<Message> temp = new ArrayList<>();
-        for (int i = 0; i < messages.size(); i++) {
-            if (messages.get(i).getSender().equals(thirdParty)) {
-                temp.add(messages.get(i));
+        for (Message message : messages) {
+            if (message.getSender().equals(thirdParty)) {
+                temp.add(message);
             }
         }
         return temp;
