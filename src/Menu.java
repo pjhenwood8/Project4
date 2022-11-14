@@ -292,33 +292,42 @@ public class Menu {
                                     }
                                     saveMessages(user);                          // after everything is finished, we save the current messages field of the user to the messages.csv using this method
                                 } else if (currUser instanceof Buyer) {
+                                    /*
+                                    if you are buyer, when trying to enter the Messaging part of the program, you will presented with 3 options
+                                    1) Either you write to the store that interests you
+                                    When you write message to the message, your message will be sent to the owner of the store, and you will be redirected to the converstion with Seller
+                                    2) Or you write to a specific seller, just like you do message with a normal person
+                                    0) Exits to the menu
+                                    */
                                     System.out.println("[1] Write to store\n[2] Write to seller\n[0] Exit");
-                                    int makeChoice = Integer.parseInt(scanner.nextLine());
+                                    int makeChoice = Integer.parseInt(scanner.nextLine());            // user chooses the option
                                     if (makeChoice == 0) {
-                                        break;
-                                    } else if (makeChoice == 1) {
+                                        break;          // breaks out of infinite loop if user chooses to exit
+                                    } else if (makeChoice == 1) {           // user chooses to text the store
                                         System.out.println("List of Stores:");
                                         for (User value : users) {
                                             if (value instanceof Seller) {
                                                 for (String storeName: ((Seller) value).getStores()) {
-                                                    System.out.println(storeName);
+                                                    System.out.println(storeName);              // name of the existing stores are printed, and all you need is to
+                                                                                                // write the name of the store you want to text to
                                                 }
                                             }
                                         }
                                         System.out.println("Enter name of the store");
-                                        String store = scanner.nextLine();
-                                        boolean flag = false;
+                                        String store = scanner.nextLine();                  // user enters the name of the store
+                                        boolean flag = false;                 // responsible for showing if store exists
                                         for (User value : users) {
-                                            if (value instanceof Seller) {
+                                            if (value instanceof Seller) {                  // goes through every User in users ArrayList, and chooses only Seller to parse through
+                                                                                            // their stores, and understand to which Seller is the store that user entered belongs to
                                                 for (int j = 0; j < ((Seller) value).getStores().size(); j++) {
-                                                    if (((Seller) value).getStores().get(j).equals(store)) {
+                                                    if (((Seller) value).getStores().get(j).equals(store)) {          // if store belongs to the Seller, then Seller's object is saved as "value" variable
                                                         flag = true;
                                                         System.out.println("Enter message you want to send to that store");
-                                                        String msg = scanner.nextLine();
+                                                        String msg = scanner.nextLine();           // main user writes the message to the store
                                                         ArrayList<Message> temp = currUser.getMessages();
-                                                        temp.add(new Message(currUser.getUsername(), value.getUsername(), msg));              // We should check if user exists in the future
-                                                        user.setMessages(temp);
-                                                        System.out.println("Store manager's username is " + value.getUsername());
+                                                        temp.add(new Message(currUser.getUsername(), value.getUsername(), msg));                  // writes new message
+                                                        user.setMessages(temp);               // update the messages field of the user
+                                                        System.out.println("Store manager's username is " + value.getUsername());          // tells user who is owner of the store
                                                         System.out.println("Please wait for his message");
                                                         for (Store s : ((Seller) value).getNewStores()) {
                                                             if (s.getStoreName().equalsIgnoreCase(store)) {
@@ -338,30 +347,30 @@ public class Menu {
                                                                 writeStores("stores.csv", stores);
                                                             }
                                                         }
-                                                        ArrayList<Message> messageHistory = parseMessageHistory(user, value.getUsername());
+                                                        ArrayList<Message> messageHistory = parseMessageHistory(user, value.getUsername());          // we update our message history and print that out
                                                         for (Message message : messageHistory) {
-                                                            if (message.getMessage().contains("\\n")) {
+                                                            if (message.getMessage().contains("\\n")) {        // if message and not a single line messages
                                                                 String ansMes = message.getMessage().replaceAll("\\\\n", "\n");
                                                                 String ans = String.format("%s   (%s -> %s)%n%s%n", message.getTime(), message.getSender(), message.getReceiver(), ansMes);
                                                                 System.out.print(ans);
                                                             } else {
-                                                                System.out.print(message.toString());
+                                                                System.out.print(message.toString());       // if message is a single line message
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                        if (!flag) {
+                                        if (!flag) {              // flag is false when store doesn't exist
                                             System.out.println("That store doesn't exist!");
                                         }
-                                        saveMessages(currUser);
-                                    } else if (makeChoice == 2) {
+                                        saveMessages(currUser);                            // updates the messages.csv file with the changes that have been made to the messsages field of the user
+                                    } else if (makeChoice == 2) {                          // if user chooses to write to the specific Seller directly
                                         while (true) {
                                             ArrayList<Message> messageHistory;
-                                            String[] listOfUsers = parseUsers(user);
+                                            String[] listOfUsers = parseUsers(user);                        // List of users with whom he had conversations before
                                             for (int i = 0; i < listOfUsers.length; i++) {
-                                                System.out.printf("[%d] %s%n", i + 1, listOfUsers[i]);
+                                                System.out.printf("[%d] %s%n", i + 1, listOfUsers[i]);      // prints the name of every user
                                             }
                                             System.out.printf("[%d] %s%n", 0, "Start new dialog");           // We provide an option to start new dialog
                                             System.out.printf("[%d] %s%n", -1, "Exit");
@@ -387,7 +396,7 @@ public class Menu {
                                                     }
                                                 }
                                                 boolean flag = true;
-                                                boolean flag1 = true;
+                                                boolean flag1 = true;               // same logic as it was in the line 123, read comments there
                                                 boolean flag2 = true;
                                                 for (User value : users) {
                                                     if (value.getUsername().equals(newUser)) {
@@ -405,9 +414,9 @@ public class Menu {
                                                     System.out.println("USER DOES NOT EXIST");
                                                 } else if (flag && flag2 && !alreadyMessaged) {
                                                     System.out.println("Write your hello message first!");
-                                                    String mes = scanner.nextLine();
+                                                    String mes = scanner.nextLine();                                        // writing message to the new user
                                                     ArrayList<Message> temp = user.getMessages();
-                                                    temp.add(new Message(user.getUsername(), newUser, mes));              // We should check if user exists in the future
+                                                    temp.add(new Message(user.getUsername(), newUser, mes));
                                                     user.setMessages(temp);
                                                     messageHistory = parseMessageHistory(user, newUser);
                                                     for (Message message : messageHistory) {
@@ -419,10 +428,10 @@ public class Menu {
                                                             System.out.print(message.toString());
                                                     }
                                                 }
-                                            } else if (receiveUser >= 1) {
+                                            } else if (receiveUser >= 1) {           // if user chooses to continue conversation with the user he had conversation before
                                                 while (true) {
                                                     messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
-                                                    for (Message message : messageHistory) {
+                                                    for (Message message : messageHistory) {                            // prints out every message
                                                         if (message.getMessage().contains("\\n")) {
                                                             String ansMes = message.getMessage().replaceAll("\\\\n", "\n");
                                                             String ans = String.format("%s   (%s -> %s)%n%s%n", message.getTime(), message.getSender(), message.getReceiver(), ansMes);
@@ -431,11 +440,14 @@ public class Menu {
                                                             System.out.print(message);
                                                     }
                                                     System.out.println();
+                                                    /*
+                                                     read comments on the line 166, identical features
+                                                    */
                                                     System.out.println("[1] Write message                         [2] Edit message");
                                                     System.out.println("[3] Delete message                        [0] Exit");
                                                     System.out.println("[-1] Export this message history to csv file");
                                                     int optionChoice = Integer.parseInt(scanner.nextLine());
-                                                    if (optionChoice == -1) {
+                                                    if (optionChoice == -1) {                   // if he chooses to export messages to the csv file
                                                         System.out.println("Enter name of the file to which you want to export your message history");
                                                         String fileName = scanner.nextLine();
                                                         PrintWriter pw = new PrintWriter(new FileOutputStream(fileName,false));
@@ -448,17 +460,17 @@ public class Menu {
                                                         System.out.println("Your message history was successfully saved to "+fileName);
                                                         System.out.println();
                                                     }
-                                                    if (optionChoice == 1) {
+                                                    if (optionChoice == 1) {                             //if user chooses to write a new message
                                                         System.out.println("You want to send a message or upload a txt file?\n[1] Send message\n[2] Upload file");
                                                         int fileOrText = Integer.parseInt(scanner.nextLine());
-                                                        if (fileOrText == 1) {
+                                                        if (fileOrText == 1) {              // if user sends regular message
                                                             System.out.println("Enter message: ");
                                                             String mes = scanner.nextLine();
                                                             ArrayList<Message> temp = user.getMessages();
                                                             temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
                                                             user.setMessages(temp);
                                                         }
-                                                        else if (fileOrText == 2) {
+                                                        else if (fileOrText == 2) {            // if user sends txt file as a message
                                                             System.out.println("Enter name of txt file: ");
                                                             String fileName = scanner.nextLine();
                                                             String mes = "";
@@ -470,16 +482,16 @@ public class Menu {
                                                                     tempArr.add(st);
                                                                 }
                                                                 mes = String.join("\\n",tempArr);
+                                                                ArrayList<Message> temp = user.getMessages();
+                                                                temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
+                                                                user.setMessages(temp);
                                                             }
                                                             catch (FileNotFoundException e) {
                                                                 System.out.println("I'm sorry but that file does not exist");
                                                             }
-                                                            ArrayList<Message> temp = user.getMessages();
-                                                            temp.add(new Message(user.getUsername(), listOfUsers[receiveUser - 1], mes));
-                                                            user.setMessages(temp);
                                                         }
                                                     }
-                                                    if (optionChoice == 2) {
+                                                    if (optionChoice == 2) {              // if user chooses to edit messages (for more detailed comments refer to line 210)
                                                         messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
                                                         ArrayList<Message> userIsSender = new ArrayList<>();
                                                         int i = 0;
@@ -498,11 +510,11 @@ public class Menu {
                                                         Message temp = userIsSender.get(choice - 1);
                                                         for (Message message : messageHistory) {
                                                             if (message.getId() == temp.getId()) {
-                                                                message.setMessage(msg);
+                                                                message.setMessage(msg);                        // updates the messages field of the user
                                                             }
                                                         }
                                                     }
-                                                    if (optionChoice == 3) {
+                                                    if (optionChoice == 3) {                 // if user chooses to delete the message (more detailed comments on the line 258)
                                                         messageHistory = parseMessageHistory(user, listOfUsers[receiveUser - 1]);
                                                         ArrayList<Message> userIsSender = new ArrayList<>();
                                                         int i = 0;
@@ -535,14 +547,17 @@ public class Menu {
                                                 System.out.println("Please enter a valid number");
                                             }
                                         }
-                                        saveMessages(user);
+                                        saveMessages(user);                        // saves changed to the messages.csv after finishing the messages part of the program
                                     }
                                 }
                                 break;
-                            case 2:
+                            case 2:                              // this is Statistics part of the code
                                 while (true) {
                                     System.out.printf("%s - Statistics%n", currUser.getUsername());
                                     System.out.println("--------------");
+                                    /*
+                                    User is presented with 4 options
+                                    */
                                     System.out.println("Select in which order you want to sort\n[1] Alphabetical\n[2] Reverse alphabetical\n[3] Most common words\n[0] Exit");
                                     int alphabetical = Integer.parseInt(scanner.nextLine());
                                     if (currUser instanceof Buyer) {
