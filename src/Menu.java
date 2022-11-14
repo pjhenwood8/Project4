@@ -1,7 +1,19 @@
 import java.io.*;
 import java.util.*;
 
-public class Menu {                                                             // Menu class, all the user interface is happening here
+/**
+ * Project 4 - Menu
+ * This program prompts the user to log in or create an account.
+ * After logging in the user can then edit their account, message
+ * other users, or view stats about themselves.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood, lab sec LC2
+ *
+ * @version November 15, 2022
+ *
+ */
+
+public class Menu {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         boolean online = true;
@@ -92,6 +104,13 @@ public class Menu {                                                             
                                             break;                                          // If user chooses to exit, we break the infinite loop, and user is able to choose statistics or account settings
                                         }
                                         if (receiveUser == 0) {                                          // dialog with new user
+                                            System.out.println("List of Available Buyers to Message: ");
+                                            for (User u : users) {
+                                                if (u instanceof Buyer) {
+                                                    System.out.println(u.getUsername());
+                                                }
+                                            }
+                                            System.out.println();
                                             System.out.println("Enter name of user:");
                                             String newUser = scanner.nextLine();         // Enter name of the new user
                                             boolean alreadyMessaged = false;
@@ -351,13 +370,20 @@ public class Menu {                                                             
                                                 break;
                                             }
                                             if (receiveUser == 0) {                                          // dialog with new user
+                                                System.out.println("List of Available Sellers to Message: ");
+                                                for (User u : users) {
+                                                    if (u instanceof Seller) {
+                                                        System.out.println(u.getUsername());
+                                                    }
+                                                }
+                                                System.out.println();
                                                 System.out.println("Enter name of user:");
                                                 String newUser = scanner.nextLine();
                                                 boolean alreadyMessaged = false;
                                                 for (String u : listOfUsers) {
                                                     if (u.equals(newUser)) {
                                                         alreadyMessaged = true;
-                                                        System.out.println("You already messaged this user");
+                                                        System.out.println("You can't start a new dialog with a user you already messaged!");
                                                     }
                                                 }
                                                 boolean flag = true;
@@ -991,7 +1017,7 @@ public static User login(Scanner scanner) {
         ArrayList<String> tempArrayList = new ArrayList<>();
         String[] tempArray;
         ArrayList<String> transferList;
-        boolean invEmail = true;
+        boolean invEmail;
         String email, pass;
         //Add users from file to arraylist
         try {
@@ -1018,6 +1044,7 @@ public static User login(Scanner scanner) {
             email = scanner.nextLine();
             System.out.println("Please enter you password:");
             pass = scanner.nextLine();
+            invEmail = true;
             for (String[] user : users) {
                 if (email.equals(user[1])) {
                     invEmail = false;

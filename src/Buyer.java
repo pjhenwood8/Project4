@@ -1,14 +1,22 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.io.FileNotFoundException;
-import java.io.*;
-import java.util.*;
 
-public class Buyer extends User{
+/**
+ * Project 4 - Buyer
+ * This class extends the user class giving it the permissions that come with being a buyer.
+ *
+ * @author Kevin Zhang, Jalen Mann, Alimzhan Sultanov, Kyle Griffin, and PJ Henwood, lab sec LC2
+ *
+ * @version November 15, 2022
+ *
+ */
+
+public class Buyer extends User {
     public Buyer (String username, String email, String password) {
         super(username, email, password);
     }
@@ -24,14 +32,17 @@ public class Buyer extends User{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        BufferedReader br = new BufferedReader(fr);
+        BufferedReader br = null;
+        if (fr != null) {
+            br = new BufferedReader(fr);
+        }
         ArrayList<String> messages = new ArrayList<>();
         ArrayList<String> stores = new ArrayList<>();
         ArrayList<Integer> totalMessagesReceived = new ArrayList<>();
         ArrayList<Integer> messagesFromUser = new ArrayList<>();
         //creates ArrayLists messages and stores
-        String line = "";
-        String store = "";
+        String line;
+        String store;
         line = br.readLine();
         while (line != null) {
             store = line.substring(1, line.indexOf(',') - 1);
