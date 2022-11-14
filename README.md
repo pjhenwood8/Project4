@@ -1,4 +1,4 @@
-# Project4
+# Project 4
 Project 4 for CS 180 
 In order to run the project code, you need to run the main method in the Menu.java class.
 After starting the program, the follow-ups and tips will be shown to user, 
